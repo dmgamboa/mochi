@@ -52,7 +52,7 @@ class _ChatScreenState extends State<ChatScreen> {
             reverse: true,
             itemCount: _messages.length,
             itemBuilder: (context, index) {
-              final message = _messages[index];
+              final message = _messages[_messages.length - 1 - index];
               return Container(
                 padding: const EdgeInsets.all(10),
                 margin: message['sender'] == 'user'
