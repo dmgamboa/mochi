@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
 import 'package:mochi/features/sample/presentation/sample.dart';
 
 class Routes {
   static Map<String, Widget Function(Object?)> routes = {
-    '/': (args) => const Sample(title: 'Sample')
+    '/': (args) => const Sample(title: 'Sample'),
+    '/chat': (args) => const ChatScreen()
   };
 
   static Route<dynamic> _errorRoute() {
