@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
+import 'dart:convert';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -11,6 +12,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _textController = TextEditingController();
   final List<Map<String, dynamic>> _messages = [];
+  String? _userId;
   late socket_io.Socket socket;
 
   @override
@@ -20,13 +22,23 @@ class _ChatScreenState extends State<ChatScreen> {
       'transports': ['websocket'],
     });
     socket.connect();
+    socket.on('connection', (id) {
+      if (_userId == null) {
+        setState(() {
+          _userId = id;
+        });
+      }
+    });
     socket.on(
         'message',
         (data) => setState(() {
-              _messages.add({
-                'sender': 'server',
-                'text': data,
-              });
+              // Map<dynamic, dynamic> json = jsonDecode(data);
+              if (data[0] != _userId) {
+                _messages.add({
+                  'sender': 'server',
+                  'text': data[1],
+                });
+              }
             }));
   }
 
@@ -38,7 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
           'sender': 'user',
           'text': message,
         });
-        socket.emit('message', message);
+        socket.emit('message', {_userId, message});
         _textController.clear();
       });
     }
