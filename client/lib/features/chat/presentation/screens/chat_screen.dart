@@ -3,6 +3,8 @@ import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'dart:convert';
 
 class ChatScreen extends StatefulWidget {
+  static const String route = '/chat';
+
   const ChatScreen({super.key});
 
   @override

@@ -8,6 +8,7 @@ class LightTheme {
     return ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
       primaryColor: Colours.pink,
+      backgroundColor: Colours.lightBg,
       colorScheme: ColorScheme.light(
         primary: Colours.pink,
         secondary: Colours.green,

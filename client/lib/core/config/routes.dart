@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
-import 'package:mochi/features/sample/presentation/sample.dart';
+import 'package:mochi/features/contacts/presentation/screens/contacts_screen.dart';
+import 'package:mochi/features/discover/presentation/screens/discover_screen.dart';
+import 'package:mochi/features/events/presentation/screens/events_screen.dart';
+import 'package:mochi/features/profile/presentation/screens/profile_screen.dart';
 
 class Routes {
   static Map<String, Widget Function(Object?)> routes = {
-    '/': (args) => const Sample(title: 'Sample'),
-    '/chat': (args) => const ChatScreen()
+    DiscoverScreen.route: (args) => const DiscoverScreen(),
+    EventsScreen.route: (args) => const EventsScreen(),
+    ChatScreen.route: (args) => const ChatScreen(),
+    ContactsScreen.route: (args) => const ContactsScreen(),
+    ProfileScreen.route: (args) => const ProfileScreen(),
   };
 
   static Route<dynamic> _errorRoute() {
@@ -24,7 +30,11 @@ class Routes {
     final generator = routes[routeName];
 
     return generator != null
-        ? MaterialPageRoute(builder: (_) => generator(args))
+        ? MaterialPageRoute(
+            settings: settings,
+            builder: (context) {
+              return generator(args);
+            })
         : _errorRoute();
   }
 }
