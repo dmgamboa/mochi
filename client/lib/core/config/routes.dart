@@ -4,6 +4,7 @@ import 'package:mochi/features/contacts/presentation/screens/contacts_screen.dar
 import 'package:mochi/features/discover/presentation/screens/discover_screen.dart';
 import 'package:mochi/features/events/presentation/screens/events_screen.dart';
 import 'package:mochi/features/profile/presentation/screens/profile_screen.dart';
+import 'package:mochi/features/auth/presentation/screens/signUp_screen.dart';
 
 class Routes {
   static Map<String, Widget Function(Object?)> routes = {
@@ -12,6 +13,7 @@ class Routes {
     ChatScreen.route: (args) => const ChatScreen(),
     ContactsScreen.route: (args) => const ContactsScreen(),
     ProfileScreen.route: (args) => const ProfileScreen(),
+    SignUpScreen.route: (args) => SignUpScreen(),
   };
 
   static Route<dynamic> _errorRoute() {

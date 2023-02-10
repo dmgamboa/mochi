@@ -56,7 +56,7 @@ class _LayoutState extends State<Layout> {
           Expanded(child: widget.body),
         ],
       ),
-      bottomNavigationBar: widget.navBar ? const BottomNavBar() : Container(),
+      bottomNavigationBar: widget.navBar ? const BottomNavBar() : SizedBox(),
     );
   }
 }
