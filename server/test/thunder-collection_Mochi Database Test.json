@@ -1,0 +1,207 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Mochi Database Test",
+    "dateExported": "2023-02-23T21:32:34.520Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "b934475a-2d86-44be-907d-8ea949d96bdb",
+            "colId": "2b852fc0-9ae2-420f-9733-5e9429a2b15a",
+            "containerId": "",
+            "name": "CREATE",
+            "url": "http://localhost:3000/users",
+            "method": "POST",
+            "sortNum": 5000,
+            "created": "2023-02-10T22:10:49.041Z",
+            "modified": "2023-02-23T21:23:31.609Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Samantha Clemens\",\n  \"email\": \"sclemens@gmail.com\",\n  \"uid\": \"123\",\n  \"profile_picture\": \" \",\n  \"friends\": [{\n    \"uid\": \"123\",\n    \"name\": \"Gary Lee\",\n    \"profile_picture\": \" \",\n    \"last_message_date\": \"2023-02-23\"\n  }],\n  \"tags\": [],\n  \"events\": [{\n    \"event_id\": \"123\",\n    \"event\": \"event name\",\n    \"date\": \"2023-02-23\"\n  }],\n  \"social_medias\": [\"instagram\"]\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "201"
+                }
+            ]
+        },
+        {
+            "_id": "f69a3cf7-50db-42af-8be3-2fc96e880d20",
+            "colId": "2b852fc0-9ae2-420f-9733-5e9429a2b15a",
+            "containerId": "",
+            "name": "CREATE 2",
+            "url": "http://localhost:3000/users",
+            "method": "POST",
+            "sortNum": 7500,
+            "created": "2023-02-21T00:58:24.587Z",
+            "modified": "2023-02-23T21:27:58.129Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Jason Harrison\",\n  \"email\": \"jHarrison@bcit.com\",\n  \"uid\": \"ThisIsNotSecure123\",\n  \"profile_picture\": \" \",\n  \"friends\": [],\n  \"tags\": [],\n  \"events\": [],\n  \"social_medias\": []\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "201"
+                }
+            ]
+        },
+        {
+            "_id": "c950f24f-480c-4bf6-80ab-96a57baba85b",
+            "colId": "2b852fc0-9ae2-420f-9733-5e9429a2b15a",
+            "containerId": "",
+            "name": "READ",
+            "url": "http://localhost:3000/users",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2023-02-10T21:49:09.237Z",
+            "modified": "2023-02-20T21:54:42.834Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "c081cceb-b990-4a27-befc-d0cb20a0996f",
+            "colId": "2b852fc0-9ae2-420f-9733-5e9429a2b15a",
+            "containerId": "",
+            "name": "FIND ONE",
+            "url": "http://localhost:3000/users/findOne/63f7d955c6726c4701b5d7f9",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2023-02-21T01:00:01.523Z",
+            "modified": "2023-02-23T21:24:59.376Z",
+            "headers": [],
+            "params": [],
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                }
+            ]
+        },
+        {
+            "_id": "a68fc320-f4ad-401e-a213-5103fd22872a",
+            "colId": "2b852fc0-9ae2-420f-9733-5e9429a2b15a",
+            "containerId": "",
+            "name": "FIND",
+            "url": "http://localhost:3000/users/find",
+            "method": "GET",
+            "sortNum": 23750,
+            "created": "2023-02-21T01:31:14.414Z",
+            "modified": "2023-02-21T01:36:34.516Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Jason Harrison\"\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                },
+                {
+                    "type": "json-query",
+                    "custom": "json.name",
+                    "action": "equal",
+                    "value": "Jason Harrison"
+                }
+            ]
+        },
+        {
+            "_id": "b1631ec9-594f-4ddd-a4d1-28fabf4356d4",
+            "colId": "2b852fc0-9ae2-420f-9733-5e9429a2b15a",
+            "containerId": "",
+            "name": "UPSERT",
+            "url": "http://localhost:3000/users/upsert/63f7da5f3e3ecc036f5a3108",
+            "method": "PUT",
+            "sortNum": 25000,
+            "created": "2023-02-21T01:16:46.266Z",
+            "modified": "2023-02-23T21:30:32.047Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Jason Harrison\",\n  \"email\": \"jHarrison@bcit.com\",\n  \"uid\": \"ThisIsNotSecureAtAll123\",\n  \"profile_picture\": \"\",\n  \"friends\": [],\n  \"tags\": [],\n  \"events\": [],\n  \"social_medias\": []\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                },
+                {
+                    "type": "json-query",
+                    "custom": "json.uid",
+                    "action": "equal",
+                    "value": "ThisIsNotSecureAtAll123"
+                }
+            ]
+        },
+        {
+            "_id": "fdbe5fbf-3470-4450-bf33-271b3f17ab95",
+            "colId": "2b852fc0-9ae2-420f-9733-5e9429a2b15a",
+            "containerId": "",
+            "name": "UPDATE",
+            "url": "http://localhost:3000/users/update/63f7d955c6726c4701b5d7f9",
+            "method": "PUT",
+            "sortNum": 30000,
+            "created": "2023-02-10T22:11:17.087Z",
+            "modified": "2023-02-23T21:31:34.386Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Samantha Clemens\",\n  \"email\": \"sclemens@gmail.com\",\n  \"uid\": \"123\",\n  \"profile_picture\": \" \",\n  \"friends\": [{\n    \"uid\": \"123\",\n    \"name\": \"Gary Lee\",\n    \"profile_picture\": \" \",\n    \"last_message_date\": \"2023-02-23\"\n  }],\n  \"tags\": [],\n  \"events\": [{\n    \"event_id\": \"123\",\n    \"event\": \"event name\",\n    \"date\": \"2023-02-23\"\n  }],\n  \"social_medias\": [\"instagram\", \"twitter\"]\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                }
+            ]
+        },
+        {
+            "_id": "48143754-0fc2-49f5-807d-29a87c8a32eb",
+            "colId": "2b852fc0-9ae2-420f-9733-5e9429a2b15a",
+            "containerId": "",
+            "name": "DELETE",
+            "url": "http://localhost:3000/users/delete/63f7da5f3e3ecc036f5a3108",
+            "method": "DELETE",
+            "sortNum": 40000,
+            "created": "2023-02-10T22:11:47.586Z",
+            "modified": "2023-02-23T21:32:09.846Z",
+            "headers": [],
+            "params": [],
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                }
+            ]
+        }
+    ]
+}
