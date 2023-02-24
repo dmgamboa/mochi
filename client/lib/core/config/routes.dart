@@ -15,9 +15,6 @@ class Routes {
     ChatScreen.route: (args) => const ChatScreen(),
     ContactsScreen.route: (args) => const ContactsScreen(),
     ProfileScreen.route: (args) => const ProfileScreen(),
-    SignupScreen.route: (args) => const SignupScreen(),
-    SigninScreen.route: (args) => const SigninScreen(),
-    ProfileCreationScreen.route: (args) => const ProfileCreationScreen(),
   };
 
   static Route<dynamic> _errorRoute() {
@@ -36,11 +33,12 @@ class Routes {
     final generator = routes[routeName];
 
     return generator != null
-        ? MaterialPageRoute(
+        ? PageRouteBuilder(
             settings: settings,
-            builder: (context) {
-              return generator(args);
-            })
+            pageBuilder: (context, anim1, anim2) => generator(args),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          )
         : _errorRoute();
   }
 }

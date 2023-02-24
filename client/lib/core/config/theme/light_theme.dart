@@ -8,7 +8,6 @@ class LightTheme {
     return ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
       primaryColor: Colours.pink,
-      backgroundColor: Colours.lightBg,
       colorScheme: ColorScheme.light(
         primary: Colours.pink,
         secondary: Colours.green,
@@ -20,13 +19,13 @@ class LightTheme {
         onError: Colours.lightBg,
       ),
       textTheme: TextTheme(
-        headline1: TextStyles.heading.copyWith(fontSize: 96),
-        headline2: TextStyles.heading.copyWith(fontSize: 60),
-        headline3: TextStyles.heading.copyWith(fontSize: 48),
-        subtitle1: TextStyles.body.copyWith(fontSize: 16),
-        bodyText1: TextStyles.body.copyWith(fontSize: 16),
-        bodyText2: TextStyles.body.copyWith(fontSize: 14),
-        button: TextStyles.heading.copyWith(fontSize: 20),
+        displayLarge: TextStyles.heading.copyWith(fontSize: 96),
+        displayMedium: TextStyles.heading.copyWith(fontSize: 60),
+        displaySmall: TextStyles.heading.copyWith(fontSize: 48),
+        titleMedium: TextStyles.body.copyWith(fontSize: 16),
+        bodyLarge: TextStyles.body.copyWith(fontSize: 16),
+        bodyMedium: TextStyles.body.copyWith(fontSize: 14),
+        labelLarge: TextStyles.heading.copyWith(fontSize: 20),
       ),
       buttonTheme: const ButtonThemeData(
         buttonColor: Colours.pink,
