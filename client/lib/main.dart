@@ -5,6 +5,7 @@ import 'package:mochi/core/config/routes.dart';
 import 'core/config/theme/light_theme.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'features/splash/presentation/screens/splash.dart';
 import 'firebase_options.dart';
 
 void main() async {

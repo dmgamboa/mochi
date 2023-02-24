@@ -7,14 +7,19 @@ import 'package:mochi/features/profile/presentation/screens/profile_creation_scr
 import 'package:mochi/features/profile/presentation/screens/profile_screen.dart';
 import 'package:mochi/features/auth/presentation/screens/signup_screen.dart';
 import 'package:mochi/features/auth/presentation/screens/signin_screen.dart';
+import 'package:mochi/features/splash/presentation/screens/splash.dart';
 
 class Routes {
   static Map<String, Widget Function(Object?)> routes = {
+    SplashScreen.route: (args) => const SplashScreen(),
     DiscoverScreen.route: (args) => const DiscoverScreen(),
     EventsScreen.route: (args) => const EventsScreen(),
     ChatScreen.route: (args) => const ChatScreen(),
     ContactsScreen.route: (args) => const ContactsScreen(),
+    SigninScreen.route: (args) => const SigninScreen(),
+    SignupScreen.route: (args) => const SignupScreen(),
     ProfileScreen.route: (args) => const ProfileScreen(),
+    ProfileCreationScreen.route: (args) => const ProfileCreationScreen(),
   };
 
   static Route<dynamic> _errorRoute() {
