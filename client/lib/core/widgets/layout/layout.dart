@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mochi/main.dart';
 
@@ -29,17 +33,31 @@ class Layout extends StatefulWidget {
 }
 
 class _LayoutState extends State<Layout> {
+  User? user;
   @override
   void initState() {
-    if (widget.needsAuth) {
-      // TODO: Redirect user if not authenticated
-    }
     super.initState();
+    if (widget.needsAuth) {
+      user = FirebaseAuth.instance.currentUser;
+      log(user.toString());
+      if (user == null) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushNamed("/signup");
+        });
+      }
+    }
+  }
+
+  updateUserState(event) {
+    setState(() {
+      user = event;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: widget.backBtn
             ? IconButton(
