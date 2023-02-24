@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mochi/main.dart';
 
+import '../../../features/auth/presentation/screens/signup_screen.dart';
 import '../nav_bar/nav_bar.dart';
 
 class Layout extends StatefulWidget {
@@ -42,7 +43,7 @@ class _LayoutState extends State<Layout> {
       log(user.toString());
       if (user == null) {
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context).pushNamed("/signup");
+          Navigator.of(context).pushNamed(SignupScreen.route);
         });
       }
     }

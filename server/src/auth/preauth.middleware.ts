@@ -1,19 +1,19 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
 import * as firebase from 'firebase-admin';
-import * as serviceAccount from './fireauth_service_account.json';
+require('dotenv').config();
 
 const firebase_params = {
-  type: serviceAccount.type,
-  projectId: serviceAccount.project_id,
-  privateKeyId: serviceAccount.private_key_id,
-  privateKey: serviceAccount.private_key,
-  clientEmail: serviceAccount.client_email,
-  clientId: serviceAccount.client_id,
-  authUri: serviceAccount.auth_uri,
-  tokenUri: serviceAccount.token_uri,
-  authProviderX509CertUrl: serviceAccount.auth_provider_x509_cert_url,
-  clientC509CertUrl: serviceAccount.client_x509_cert_url,
+  type: 'service_account',
+  projectId: 'mochi-c4c75',
+  privateKeyId: process.env.GOOGLE_PRIVATE_KEY_ID,
+  privateKey: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  clientEmail: process.env.GOOGLE_CLIENT_EMAIL,
+  clientId: process.env.GOOGLE_CLIENT_ID,
+  authUri: 'https://accounts.google.com/o/oauth2/auth',
+  tokenUri: 'https://oauth2.googleapis.com/token',
+  authProviderX509CertUrl: 'https://www.googleapis.com/oauth2/v1/certs',
+  clientC509CertUrl: process.env.GOOGLE_CLIENT_X509_CERT_URL,
 };
 
 @Injectable()

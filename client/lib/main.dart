@@ -24,7 +24,7 @@ class MochiApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: LightTheme.theme,
       onGenerateRoute: Routes.generate,
-      initialRoute: '/discover',
+      initialRoute: '/signup',
     );
   }
 }
