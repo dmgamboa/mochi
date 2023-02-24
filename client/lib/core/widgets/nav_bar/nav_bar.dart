@@ -19,6 +19,7 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   int _page = 2;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+  static const Duration animDuration = Duration(milliseconds: 600);
   final List<NavBarItem> _items = [
     NavBarItem(
       icon: CupertinoIcons.chat_bubble_2,
@@ -50,8 +51,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _page = _items
+    int page = _items
         .indexWhere((e) => e.route == ModalRoute.of(context)!.settings.name);
+    if (page >= 0) {
+      _page = page;
+    }
   }
 
   @override
@@ -61,14 +65,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
       index: _page,
       color: Theme.of(context).primaryColor,
       buttonBackgroundColor: Theme.of(context).colorScheme.secondary,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       animationCurve: Curves.easeInOut,
-      animationDuration: const Duration(milliseconds: 600),
+      animationDuration: animDuration,
       onTap: (index) {
         setState(() {
           _page = index;
         });
-        Navigator.pushNamed(context, _items[index].route);
+        Future.delayed(animDuration,
+            () => Navigator.pushNamed(context, _items[index].route));
       },
       letIndexChange: (index) => true,
       items: List.generate(
@@ -76,7 +81,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         (index) => Icon(
           _page == index ? _items[index].activeIcon : _items[index].icon,
           size: 30,
-          color: Theme.of(context).backgroundColor,
+          color: Theme.of(context).colorScheme.background,
         ),
       ),
     );
