@@ -1,7 +1,12 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mochi/main.dart';
 
+import '../../../features/auth/presentation/screens/signup_screen.dart';
 import '../nav_bar/nav_bar.dart';
 
 class Layout extends StatefulWidget {
@@ -29,17 +34,31 @@ class Layout extends StatefulWidget {
 }
 
 class _LayoutState extends State<Layout> {
+  User? user;
   @override
   void initState() {
-    if (widget.needsAuth) {
-      // TODO: Redirect user if not authenticated
-    }
     super.initState();
+    if (widget.needsAuth) {
+      user = FirebaseAuth.instance.currentUser;
+      log(user.toString());
+      if (user == null) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushNamed(SignupScreen.route);
+        });
+      }
+    }
+  }
+
+  updateUserState(event) {
+    setState(() {
+      user = event;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: widget.backBtn
             ? IconButton(
@@ -56,7 +75,7 @@ class _LayoutState extends State<Layout> {
           Expanded(child: widget.body),
         ],
       ),
-      bottomNavigationBar: widget.navBar ? const BottomNavBar() : Container(),
+      bottomNavigationBar: widget.navBar ? const BottomNavBar() : SizedBox(),
     );
   }
 }

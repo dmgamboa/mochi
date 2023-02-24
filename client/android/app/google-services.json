@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "699417011577",
+    "project_id": "mochi-c4c75",
+    "storage_bucket": "mochi-c4c75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:699417011577:android:360d20675a4b93ad22bba8",
+        "android_client_info": {
+          "package_name": "BCIT.mochi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "699417011577-no68lfkfu8rcgveok3ekr97b43rqhnho.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0d4WX6QFlt9k51gwfQE7kXQIW8-qzLig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "699417011577-no68lfkfu8rcgveok3ekr97b43rqhnho.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "699417011577-ae4d6ulcd4heeaa70vqm8m5ufi20omb4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "BCIT.mochi"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:699417011577:android:51b5f5c9b57bfd9022bba8",
+        "android_client_info": {
+          "package_name": "com.example.mochi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "699417011577-no68lfkfu8rcgveok3ekr97b43rqhnho.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0d4WX6QFlt9k51gwfQE7kXQIW8-qzLig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "699417011577-no68lfkfu8rcgveok3ekr97b43rqhnho.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "699417011577-ae4d6ulcd4heeaa70vqm8m5ufi20omb4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "BCIT.mochi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
