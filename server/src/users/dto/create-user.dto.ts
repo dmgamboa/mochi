@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import { Friend } from '../schemas/friend.schema';
 import { EventHistory } from '../schemas/eventHistory.schema';
+import { Settings } from '../schemas/settings.schema';
 
 export class CreateUserDto {
     readonly name: string;
@@ -11,4 +12,5 @@ export class CreateUserDto {
     readonly tags: string[];
     readonly events: Types.Array<EventHistory>;
     readonly social_medias: string[];
+    readonly settings: Settings;
 }

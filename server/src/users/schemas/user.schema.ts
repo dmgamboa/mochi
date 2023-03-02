@@ -4,6 +4,7 @@ import { SocialMedia } from '../../enums/enums.socialMedia';
 import { Tag } from '../../enums/enums.tag';
 import { Friend, FriendSchema } from './friend.schema';
 import { EventHistory, EventHistorySchema } from './eventHistory.schema';
+import { Settings, SettingsSchema } from './settings.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -46,6 +47,12 @@ export class User {
         required: true,
     })
     social_medias: string[];
+
+    @Prop({
+        type: SettingsSchema,
+        required: true,
+    })
+    settings: Settings;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
