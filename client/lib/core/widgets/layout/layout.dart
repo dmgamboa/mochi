@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mochi/main.dart';
 
 import '../../../features/auth/presentation/screens/signup_screen.dart';
 import '../nav_bar/nav_bar.dart';
@@ -49,12 +47,6 @@ class _LayoutState extends State<Layout> {
     }
   }
 
-  updateUserState(event) {
-    setState(() {
-      user = event;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +67,8 @@ class _LayoutState extends State<Layout> {
           Expanded(child: widget.body),
         ],
       ),
-      bottomNavigationBar: widget.navBar ? const BottomNavBar() : SizedBox(),
+      bottomNavigationBar:
+          widget.navBar ? const BottomNavBar() : const SizedBox(),
     );
   }
 }

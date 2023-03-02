@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:mochi/core/config/typography.dart';
 import 'package:mochi/core/utils/colours.dart';
+import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
 
 import 'package:mochi/features/discover/presentation/screens/discover_screen.dart';
 import 'package:mochi/features/onboarding/presentation/constants.dart';
