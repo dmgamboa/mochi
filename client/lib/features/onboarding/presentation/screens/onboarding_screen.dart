@@ -20,9 +20,8 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final introKey = GlobalKey<IntroductionScreenState>();
 
-//Navigator.pushNamed(context, DiscoverScreen.route);
   void _onIntroEnd(context) {
-    Navigator.pushNamed(context, ProfileCreationScreen.route);
+    Navigator.pushNamed(context, DiscoverScreen.route);
   }
 
   @override

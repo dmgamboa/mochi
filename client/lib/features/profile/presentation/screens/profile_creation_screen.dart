@@ -12,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/config/colours.dart';
 import '../../../discover/presentation/screens/discover_screen.dart';
 
+import 'package:mochi/core/enums/interestsList.dart' as interests_list;
+
 class ProfileCreationScreen extends StatefulWidget {
   static const String route = '/profile_creation';
 
@@ -331,7 +333,7 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
       ),
       headlineText: 'Select Users',
       height: 500,
-      listData: interestList,
+      listData: interests_list.interestsList,
       selectedListData: selectedInterestsList,
       choiceChipLabel: (item) => item!,
       validateSelectedItem: (list, val) => list!.contains(val),
@@ -425,26 +427,3 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
     return chips;
   }
 }
-
-List<String> interestList = [
-  'Art',
-  'Business',
-  'Cooking',
-  'Dance',
-  'Design',
-  'Education',
-  'Fashion',
-  'Fitness',
-  'Food',
-  'Gaming',
-  'Health',
-  'History',
-  'Music',
-  'Photography',
-  'Politics',
-  'Science',
-  'Sports',
-  'Technology',
-  'Travel',
-  'Writing',
-];

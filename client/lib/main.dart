@@ -26,8 +26,7 @@ class MochiApp extends StatelessWidget {
       title: 'Mochi',
       theme: LightTheme.theme,
       onGenerateRoute: Routes.generate,
-      //initialRoute: SplashScreen.route,
-      initialRoute: ProfileCreationScreen.route,
+      initialRoute: SplashScreen.route,
     );
   }
 }
