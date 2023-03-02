@@ -21,4 +21,10 @@ export class AppController {
   getSignup(@Req() request: Request): string {
     return 'Successfully Signed up ' + request['user']?.email + '!';
   }
+
+  //for testing purposes, will be removed/refactored later
+  @Post('/profileCreation')
+  getProfileCreation(@Req() request: Request): JSON {
+    return { ...request['user'], ...request['body'] } as JSON;
+  }
 }

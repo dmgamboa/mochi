@@ -6,6 +6,7 @@ import 'package:mochi/core/utils/colours.dart';
 
 import 'package:mochi/features/discover/presentation/screens/discover_screen.dart';
 import 'package:mochi/features/onboarding/presentation/constants.dart';
+import 'package:mochi/features/profile/presentation/screens/profile_creation_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   static const String route = '/onboarding';
@@ -19,8 +20,9 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final introKey = GlobalKey<IntroductionScreenState>();
 
+//Navigator.pushNamed(context, DiscoverScreen.route);
   void _onIntroEnd(context) {
-    Navigator.pushNamed(context, DiscoverScreen.route);
+    Navigator.pushNamed(context, ProfileCreationScreen.route);
   }
 
   @override
