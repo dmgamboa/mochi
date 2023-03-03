@@ -1,10 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:mochi/features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'package:mochi/features/discover/presentation/screens/discover_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  static const String route = '/';
+  static const String route = '/splash';
 
   const SplashScreen({super.key});
 
@@ -19,12 +21,13 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(splashDuration, () {
-      // TODO: Redirect to either onboarding or login
       Navigator.push(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              const OnboardingScreen(),
+              FirebaseAuth.instance.currentUser == null
+                  ? const OnboardingScreen()
+                  : const DiscoverScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
               opacity: animation,
@@ -53,10 +56,14 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ),
         child: Center(
-            child: Container(
-          padding: const EdgeInsets.all(10),
-          child: SvgPicture.asset('assets/brand/logo.svg'),
-        )),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.75,
+            child: SvgPicture.asset(
+              'assets/brand/logo.svg',
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
 import 'package:mochi/features/contacts/presentation/screens/contacts_screen.dart';
 import 'package:mochi/features/discover/presentation/screens/discover_screen.dart';
 import 'package:mochi/features/events/presentation/screens/events_screen.dart';
+import 'package:mochi/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:mochi/features/profile/presentation/screens/profile_creation_screen.dart';
 import 'package:mochi/features/profile/presentation/screens/profile_screen.dart';
 import 'package:mochi/features/auth/presentation/screens/signup_screen.dart';
@@ -12,6 +13,7 @@ import 'package:mochi/features/splash/presentation/screens/splash.dart';
 class Routes {
   static Map<String, Widget Function(Object?)> routes = {
     SplashScreen.route: (args) => const SplashScreen(),
+    OnboardingScreen.route: (args) => const OnboardingScreen(),
     DiscoverScreen.route: (args) => const DiscoverScreen(),
     EventsScreen.route: (args) => const EventsScreen(),
     ChatScreen.route: (args) => const ChatScreen(),
