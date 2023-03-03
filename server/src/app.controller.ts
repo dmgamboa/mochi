@@ -41,6 +41,7 @@ export class AppController {
         email: request['user']?.email,
         uid: request['user']?.uid,
         profile_picture: ' ',
+        display_message: ' ',
         friends: null,
         tags: [],
         events: null,
