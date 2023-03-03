@@ -63,7 +63,43 @@ export class AppController {
 
   //for testing purposes, will be removed/refactored later
   @Post('/profileCreation')
-  getProfileCreation(@Req() request: Request): JSON {
-    return { ...request['user'], ...request['body'] } as JSON;
+  async getProfileCreation(@Req() request: Request): Promise<any> {
+    try {
+      var users: User[] = await this.usersService.find({
+        email: request['user']?.email,
+      });
+
+      if (users.length == 0) {
+        return 'User not found';
+      }
+
+      var doc_id = users[0]['_id'];
+
+      const newUser: BaseDoc<User> = {
+        name: request['body']?.displayName,
+        email: request['user']?.email,
+        uid: request['user']?.uid,
+        profile_picture: request['body']?.profileImage,
+        display_message: request['body']?.displayMessage,
+        friends: null,
+        tags: request['body']?.interests,
+        events: null,
+        social_medias: [],
+        settings: {
+          friend_hot_notifications: [Interval.OFF],
+          friend_cold_notifications: [Interval.OFF],
+          event_notifications: [Preferences.OFF],
+          dark_mode: false,
+        },
+      };
+
+      await this.usersService.upsert(doc_id, newUser as CreateUserDto);
+      return (
+        'Successfully created profile for ' + request['body']?.displayName + '!'
+      );
+    } catch (error) {
+      console.log(error);
+      return 'Failed to create user.';
+    }
   }
 }
