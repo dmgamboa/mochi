@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mochi/core/config/routes.dart';
-import 'package:mochi/features/profile/presentation/screens/profile_creation_screen.dart';
+import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
 import 'core/config/theme/light_theme.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -26,7 +26,8 @@ class MochiApp extends StatelessWidget {
       title: 'Mochi',
       theme: LightTheme.theme,
       onGenerateRoute: Routes.generate,
-      initialRoute: SplashScreen.route,
+      initialRoute: ChatScreen.route,
+      // initialRoute: SplashScreen.route,
     );
   }
 }
