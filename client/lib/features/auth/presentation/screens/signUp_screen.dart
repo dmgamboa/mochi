@@ -147,10 +147,10 @@ class _SignupScreenState extends State<SignupScreen> {
       }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-      ScaffoldMessenger.of(this.context).showSnackBar(const SnackBar(
-        content: Text('Account created successfully'),
-        backgroundColor: Colors.green,
-      ));
+      // ScaffoldMessenger.of(this.context).showSnackBar(const SnackBar(
+      //   content: Text('Account created successfully'),
+      //   backgroundColor: Colors.green,
+      // ));
       var tokenId = await FirebaseAuth.instance.currentUser!.getIdToken(true);
       var url = Uri.parse('http://10.0.2.2:3000/signup');
       var _headers = {

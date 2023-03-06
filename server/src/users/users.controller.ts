@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, HttpException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schemas/user.schema';
@@ -11,9 +11,15 @@ export class UsersController {
     @Post()
     async create(@Body() createUserDto: CreateUserDto) {
         try {
-            this.usersService.create(createUserDto);
-        } catch (error) {
-            console.log(error);
+            const user = await this.usersService.create(createUserDto);   
+            
+            if (user.name == null) {
+                throw new HttpException(user, 400);
+            } else {
+                return user;
+            }
+        } catch (err) {
+            throw new HttpException(err, 400);
         }
     }
 
@@ -21,56 +27,82 @@ export class UsersController {
     @Get()
     async findAll(): Promise<User[]> {
         try {
-            return this.usersService.findAll();
-        } catch (error) {
-            console.log(error);
-        }     
+            const users = await this.usersService.findAll();
+
+            if (users.length == 0) {
+                throw new HttpException("Users not found", 404);
+            } else {
+                return users; 
+            }
+        } catch {
+            throw new HttpException("Users not found", 404);
+        }
     }
 
     @Get('/findOne/:id')
     async findOne(@Param('id') id: string): Promise<User> {
         try {
-            return this.usersService.findOne(id);
-        } catch (error) {
-            console.log(error);
-        }
+            const users = await this.usersService.findOne(id);
+
+            if (users == null) {
+                throw new HttpException("User not found", 404);
+            } else {
+                return users;
+            }
+        } catch {
+            throw new HttpException("User not found", 404);
+        }       
     }
 
     @Get('/find')
     async find(@Body() query: String): Promise<User[]> {
         try {
-            return this.usersService.find(query);
-        } catch (error) {
-            console.log(error);
+            const users = await this.usersService.find(query);
+
+            if (users.length == 0) {
+                throw new HttpException(users, 404);
+            } else {
+                return users;
+            } 
+        } catch (err) {
+            throw new HttpException(err, 404);
         }      
     }
 
     //Update
     @Put('/upsert/:id')
     async upsert(@Param('id') id: string, @Body() updateUserDto: CreateUserDto): Promise<User> {
-        try {
-            return this.usersService.upsert(id, updateUserDto);
-        } catch (error) {
-            console.log(error);
-        }        
+        return this.usersService.upsert(id, updateUserDto);           
     }
 
     @Put('/update/:id')
     async update(@Param('id') id: string, @Body() updateUserDto: CreateUserDto): Promise<User> {
         try {
-            return this.usersService.update(id, updateUserDto);
-        } catch (error) {
-            console.log(error);
-        }      
+            const user = await this.usersService.update(id, updateUserDto);
+
+            if (user.name == null) {
+                throw new HttpException(user, 404);
+            } else {
+                return user;
+            }
+        } catch (err) {
+            throw new HttpException(err, 404);
+        }     
     }
 
     //Delete
     @Delete('/delete/:id')
     async remove(@Param('id') id: string): Promise<User> {
         try {
-            return this.usersService.remove(id);
-        } catch (error) {
-            console.log(error);
-        }        
+            const user = await this.usersService.remove(id);
+            
+            if (user.name == null) {
+                throw new HttpException(user, 404);
+            } else {
+                return user;
+            }
+        } catch (err) {
+            throw new HttpException(err, 404);
+        }             
     }
 }

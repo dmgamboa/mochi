@@ -10,7 +10,8 @@ import { ChatGateway } from './chat/chat.gateway';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
-
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from './http-exception/http-exception.filter';
 import { PreAuthMiddleware } from './auth/preauth.middleware';
 
 @Module({
@@ -20,7 +21,13 @@ import { PreAuthMiddleware } from './auth/preauth.middleware';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [AppService, 
+    ChatGateway,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    }
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
