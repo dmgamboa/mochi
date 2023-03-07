@@ -7,88 +7,66 @@ import { User, UserDocument } from './schemas/user.schema';
 // This is the service that will be used to interact with the database invloving the User model
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) {}
+    constructor(
+        @InjectModel(User.name) private readonly userModel: Model<UserDocument>
+    ) {}
 
   //CRUD operations
   //Create
   async create(createUserDto: CreateUserDto): Promise<User> {
-    try {
-      const createdUser = await this.userModel.create(createUserDto);
-      return createdUser;
-    } catch (error) {
-      console.log(error);
-    }
+    const createdUser = await this.userModel.create(createUserDto).catch(err => {
+    return err.message;
+    });
+    return createdUser;
   }
 
   //Read
   //Get all users
   async findAll(): Promise<User[]> {
-    try {
-      const users = await this.userModel.find().exec();
-      return [...users];
-    } catch (error) {
-      console.log(error);
-    }
+    const users = await this.userModel.find().exec();
+    return [...users];
   }
 
   //Find one user by id
   async findOne(id: string): Promise<User> {
-    try {
-      return this.userModel.findOne({ _id: id }).exec();
-    } catch (error) {
-      console.log(error);
-    }
+    const user = await this.userModel.findOne({_id: id}).exec();
+
+      if (user == null) {
+        return null;
+      } else {
+        return user;
+      }
   }
 
   //Find users by custom query. Query is a JSON object from request body
-  async find(query: object): Promise<User[]> {
-    try {
-      const users = await this.userModel.find(query).exec();
-      return [...users];
-    } catch (error) {
-      console.log(error);
-    }
+  async find(query: Object): Promise<User[]> {
+    const users = await this.userModel.find(query).exec().catch(err => {
+      return err.message;
+    });
+    return [...users];     
   }
 
   //Update
   //Upsert - Add new document if id is not found, otherwise update the document with matching id
   async upsert(id: string, updateUserDto: CreateUserDto): Promise<User> {
-    try {
-      const user = await this.userModel
-        .findByIdAndUpdate(id, updateUserDto, { overwrite: true, upsert: true })
-        .exec();
-      return user;
-    } catch (error) {
-      console.log(error);
-    }
+    const user = await this.userModel.findByIdAndUpdate(id, updateUserDto, {overwrite: true, upsert: true}).exec();
+    return user;
   }
 
   //Update - updates existing document with matching id
   async update(id: String, updateUserDto: CreateUserDto): Promise<User> {
-    try {
-      const user = await this.userModel
-        .findByIdAndUpdate(id, updateUserDto, {
-          overwrite: false,
-          upsert: false,
-        })
-        .exec();
-      return user;
-    } catch (error) {
-      console.log(error);
-    }
+    const user = await this.userModel.findByIdAndUpdate(id, updateUserDto, {overwrite: false, upsert: false}).exec()
+    .catch(err => {
+      return err.message;
+    });
+    return user;
   }
 
   //Delete
   async remove(id: string): Promise<User> {
-    try {
-      const deletedUser = await this.userModel
-        .findByIdAndRemove({ _id: id })
-        .exec();
-      return deletedUser;
-    } catch (error) {
-      console.log(error);
-    }
+    const deletedUser = await this.userModel.findByIdAndRemove({_id: id}).exec().catch(err => {
+      return err.message;
+    });
+    return deletedUser;
   }
 }
