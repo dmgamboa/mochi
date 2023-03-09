@@ -12,6 +12,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './http-exception/http-exception.filter';
+import { StorageService } from './storage/storage.service';
+import { FirebaseService } from './firebase/firebase.service';
+
 import { PreAuthMiddleware } from './auth/preauth.middleware';
 
 @Module({
@@ -21,9 +24,12 @@ import { PreAuthMiddleware } from './auth/preauth.middleware';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService,
-     ChatGateway,
-     {
+  providers: [
+    AppService,
+    FirebaseService,
+    StorageService,
+    ChatGateway,
+    {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },

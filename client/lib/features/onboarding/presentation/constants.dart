@@ -13,14 +13,14 @@ class OnboardingConstants {
       'heading': 'find time to chill',
       'description':
           'make new friends or reconnect with old friends who share similar interests with you safely and securely!',
-      'image': 'assets/graphics/onboarding/carousel_01.svg',
+      'image': 'assets/graphics/onboarding/carousel_02.svg',
       'color': Colours.green,
     },
     {
       'heading': 'flavours just for you',
       'description':
           'create new public events to meet with like-minded people, plan private events with friends, or find local events catered to your interests and your friends groups!',
-      'image': 'assets/graphics/onboarding/carousel_01.svg',
+      'image': 'assets/graphics/onboarding/carousel_03.svg',
       'color': Colours.purple,
     },
   ];
