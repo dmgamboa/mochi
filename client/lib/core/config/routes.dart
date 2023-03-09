@@ -3,6 +3,7 @@ import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
 import 'package:mochi/features/contacts/presentation/screens/contacts_screen.dart';
 import 'package:mochi/features/discover/presentation/screens/discover_screen.dart';
 import 'package:mochi/features/events/presentation/screens/events_screen.dart';
+import 'package:mochi/features/events/presentation/screens/event_creation_screen.dart';
 import 'package:mochi/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:mochi/features/profile/presentation/screens/profile_creation_screen.dart';
 import 'package:mochi/features/profile/presentation/screens/profile_screen.dart';
@@ -16,6 +17,7 @@ class Routes {
     OnboardingScreen.route: (args) => const OnboardingScreen(),
     DiscoverScreen.route: (args) => const DiscoverScreen(),
     EventsScreen.route: (args) => const EventsScreen(),
+    EventCreationScreen.route: (args) => const EventCreationScreen(),
     ChatScreen.route: (args) => const ChatScreen(),
     ContactsScreen.route: (args) => const ContactsScreen(),
     SigninScreen.route: (args) => const SigninScreen(),

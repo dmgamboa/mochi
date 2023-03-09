@@ -61,6 +61,12 @@ export class AppController {
     }
   }
 
+  @Post('/eventCreation')
+  getEventCreation(@Req() request: Request): string {
+    return JSON.stringify(request['body']);
+  }
+
+
   //for testing purposes, will be removed/refactored later
   @Post('/profileCreation')
   async getProfileCreation(@Req() request: Request): Promise<any> {

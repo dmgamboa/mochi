@@ -1,8 +1,7 @@
-// import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mochi/features/events/presentation/screens/event_creation_screen.dart';
 
 import 'dart:developer';
 
@@ -40,20 +39,11 @@ class _EventsScreenState extends State<EventsScreen> {
                         ),
                         onPressed: () {
                           log('create event');
+                          Navigator.of(context)
+                              .pushNamed(EventCreationScreen.route);
                         },
                         child: const Text("Create Event"),
                       ),
-                      // ElevatedButton.icon(
-                      //   style: ElevatedButton.styleFrom(
-                      //     primary: Colours.pink,
-                      //   ),
-                      //   onPressed: createEvent(),
-                      //   icon: const Icon(
-                      //     Icons.celebration_sharp,
-                      //     // color: Colours.pink,
-                      //   ),
-                      //   label: const Text("Create Event"),
-                      // ),
                     ],
                   )),
             ),
