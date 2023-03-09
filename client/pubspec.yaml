@@ -28,6 +28,7 @@ dependencies:
   camera: ^0.10.3+1
   video_player: ^2.5.2
   path_provider: ^2.0.13
+  carousel_slider: ^4.2.1
 
 
 dev_dependencies:

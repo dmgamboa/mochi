@@ -6,6 +6,7 @@ import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
 import 'core/config/theme/light_theme.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'features/events/presentation/screens/events_screen.dart';
 import 'features/splash/presentation/screens/splash.dart';
 import 'firebase_options.dart';
 
@@ -26,7 +27,7 @@ class MochiApp extends StatelessWidget {
       title: 'Mochi',
       theme: LightTheme.theme,
       onGenerateRoute: Routes.generate,
-      initialRoute: ChatScreen.route,
+      initialRoute: EventsScreen.route,
       // initialRoute: SplashScreen.route,
     );
   }
