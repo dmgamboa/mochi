@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mochi/features/profile/presentation/screens/profile_screen.dart';
 
 import '../../../../core/config/colours.dart';
 import '../../../discover/presentation/screens/discover_screen.dart';
@@ -212,6 +213,11 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
                         content: Text(response.body),
                         backgroundColor: Colors.green,
                       ));
+                      await Future.delayed(const Duration(seconds: 5));
+                      if (context.mounted) {
+                        Navigator.of(context).pushNamed(ProfileScreen.route);
+                      }
+
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
                       // ScaffoldMessenger.of(context).showSnackBar(

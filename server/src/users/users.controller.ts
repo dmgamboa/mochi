@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, HttpException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schemas/user.schema';
@@ -55,7 +55,7 @@ export class UsersController {
     }
 
     @Get('/find')
-    async find(@Body() query: String): Promise<User[]> {
+    async find(@Query() query): Promise<User[]> {
         try {
             const users = await this.usersService.find(query);
 
