@@ -26,15 +26,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _getData();
   }
 
-//  var tokenId = await FirebaseAuth.instance.currentUser!
-//                           .getIdToken(true);
-//                       var url =
-//                           Uri.parse('http://10.0.2.2:3000/profileCreation');
-//                       var _headers = {
-//                         'Content-Type': 'application/json',
-//                         'Authorization': 'Bearer $tokenId',
-//                       };
-
   Future<void> _getData() async {
     try {
       log('inside get data');
@@ -49,18 +40,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       };
 
       final response = await http.get(url, headers: _headers);
-      // log('hi');
-      // log(response.body);
       final jsonResponse = jsonDecode(response.body);
       final firstItem = jsonResponse[0];
       final id = firstItem['_id'];
-      // log(id);
 
       var url2 = Uri.parse('http://10.0.2.2:3000/users/findOne/$id');
       final response2 = await http.get(url2, headers: _headers);
-      // log('after 2');
-      // log(response2.body);
-      // var users = response.body.;
+
       setState(() {
         _data = jsonDecode(response2.body);
       });
@@ -69,10 +55,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       log(e.toString());
     }
   }
-
-  // final jsonResponse = jsonDecode(response);
-  // final firstItem = jsonResponse[0];
-  // final id = firstItem['_id'];
 
   @override
   Widget build(BuildContext context) {
