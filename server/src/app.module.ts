@@ -16,12 +16,14 @@ import { StorageService } from './storage/storage.service';
 import { FirebaseService } from './firebase/firebase.service';
 
 import { PreAuthMiddleware } from './auth/preauth.middleware';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGO_CONN_URL),
     UsersModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [
