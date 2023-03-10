@@ -1,0 +1,302 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Mochi Event Schema Test",
+    "dateExported": "2023-03-10T22:24:28.303Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "e94fbbf2-1b62-494b-a880-fce92ee8d395",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "CREATE EVENT",
+            "url": "http://localhost:3000/events/create",
+            "method": "POST",
+            "sortNum": 5000,
+            "created": "2023-03-10T21:10:58.230Z",
+            "modified": "2023-03-10T21:59:41.856Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"uid\": \"abc123\",\n  \"event\": \"BCIT Grad Party\",\n  \"startTime\": \"2023-06-12T10:00\",\n  \"endTime\": \"2023-06-12T15:00\",\n  \"date\": \"2023-06-12\",\n  \"location\": \"BCIT\",\n  \"details\": \"Grad Party WOOOOOOOOOOOOH\",\n  \"attendees\": [],\n  \"tags\": [\"Dance music\"],\n  \"posts\": [\"This is so cool\"]\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "201"
+                }
+            ]
+        },
+        {
+            "_id": "32fea495-ceb4-4512-bb39-59858a9c723b",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "GET ALL",
+            "url": "http://localhost:3000/events/findAll",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2023-03-10T20:43:31.352Z",
+            "modified": "2023-03-10T21:10:37.757Z",
+            "headers": [],
+            "params": [],
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                },
+                {
+                    "type": "Content-Length",
+                    "custom": "",
+                    "action": "notequal",
+                    "value": "0"
+                }
+            ]
+        },
+        {
+            "_id": "24e4b04f-7bce-42ca-9e6b-4c039e36ae82",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "GET BY EVENT NAME",
+            "url": "http://localhost:3000/events/find",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2023-03-10T21:26:25.509Z",
+            "modified": "2023-03-10T22:01:48.656Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"event\": \"BCIT Grad Party\"\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "201"
+                },
+                {
+                    "type": "json-query",
+                    "custom": "json.event",
+                    "action": "equal",
+                    "value": "BCIT Grad Party"
+                }
+            ]
+        },
+        {
+            "_id": "11e718ff-d629-47bb-a5f4-fee7a157a0b0",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "UPSERT EVENT",
+            "url": "http://localhost:3000/events/upsert/640baa651eab05d67c013869",
+            "method": "PUT",
+            "sortNum": 40000,
+            "created": "2023-03-10T21:29:29.249Z",
+            "modified": "2023-03-10T22:14:27.434Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"uid\": \"dddd\",\n  \"event\": \"Park Meetup\",\n  \"startTime\": \"2023-06-15T10:00\",\n  \"endTime\": \"2023-06-15T15:00\",\n  \"date\": \"2023-06-15\",\n  \"location\": \"Victoria Park\",\n  \"details\": \"Let's meetup at the park and see the flowers\",\n  \"attendees\": [\"uid123\"],\n  \"tags\": [\"Family\"],\n  \"posts\": []\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                }
+            ]
+        },
+        {
+            "_id": "8436b830-f8dc-41f4-a4d3-e968481b8e5d",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "UPDATE EVENT",
+            "url": "http://localhost:3000/events/upsert/640bad180270714d9ea2f382",
+            "method": "PUT",
+            "sortNum": 45000,
+            "created": "2023-03-10T21:46:02.552Z",
+            "modified": "2023-03-10T22:20:38.295Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"uid\": \"abc123\",\n  \"event\": \"BCIT Grad Party\",\n  \"startTime\": \"2023-06-12T10:00\",\n  \"endTime\": \"2023-06-12T15:00\",\n  \"date\": \"2023-06-12\",\n  \"location\": \"BCIT\",\n  \"details\": \"Grad Party\",\n  \"attendees\": [],\n  \"tags\": [\"Parties\"],\n  \"posts\": [\"This is so cool\"]\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                }
+            ]
+        },
+        {
+            "_id": "e63cf661-8620-43f6-88da-122e655a0350",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "DELETE EVENT BY QUERY",
+            "url": "http://localhost:3000/events/delete",
+            "method": "DELETE",
+            "sortNum": 50000,
+            "created": "2023-03-10T21:32:00.704Z",
+            "modified": "2023-03-10T21:32:47.473Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"event\": \"BCIT Grad Party\"\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                }
+            ]
+        },
+        {
+            "_id": "ca630d08-f5ff-4909-b43d-2c1d748efad7",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "CREATE VALIDATION ERROR TEST",
+            "url": "http://localhost:3000/events/create",
+            "method": "POST",
+            "sortNum": 70000,
+            "created": "2023-03-10T21:48:17.454Z",
+            "modified": "2023-03-10T21:50:37.555Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"uid\": \"abc123\",\n  \"event\": \"This will not work\"\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "400"
+                }
+            ]
+        },
+        {
+            "_id": "eb056030-373c-493a-b397-e47121bd9a32",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "GET VALIDATION ERROR TEST",
+            "url": "http://localhost:3000/events/find",
+            "method": "GET",
+            "sortNum": 80000,
+            "created": "2023-03-10T21:49:53.188Z",
+            "modified": "2023-03-10T21:50:24.643Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"uid\": \"abv123\"\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "404"
+                }
+            ]
+        },
+        {
+            "_id": "e9e011d2-f317-4f48-9042-ad7a6a5b9365",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "UPSERT VALIDATION ERROR TEST",
+            "url": "http://localhost:3000/events/upsert/640baa651eab05d67c013868",
+            "method": "PUT",
+            "sortNum": 90000,
+            "created": "2023-03-10T21:54:18.872Z",
+            "modified": "2023-03-10T22:15:55.823Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"uid\": \"sss\"\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "400"
+                }
+            ]
+        },
+        {
+            "_id": "ad86bef8-5afe-458b-9eaa-ab5b9a2452e2",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "UPDATE VALIDATION ERROR TEST",
+            "url": "http://localhost:3000/events/upsert/640baa651eab05d67c013869",
+            "method": "PUT",
+            "sortNum": 100000,
+            "created": "2023-03-10T21:55:20.886Z",
+            "modified": "2023-03-10T22:21:28.923Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"uid\": \"1234\"\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "400"
+                }
+            ]
+        },
+        {
+            "_id": "d4f82925-c094-4b61-95ba-67ffb2d46766",
+            "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
+            "containerId": "",
+            "name": "DELETE VALIDATION TEST",
+            "url": "http://localhost:3000/delete",
+            "method": "DELETE",
+            "sortNum": 110000,
+            "created": "2023-03-10T21:55:56.958Z",
+            "modified": "2023-03-10T21:57:11.546Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"id\": \"ppppp\"\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "404"
+                }
+            ]
+        }
+    ]
+}
