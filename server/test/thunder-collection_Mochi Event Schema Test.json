@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Mochi Event Schema Test",
-    "dateExported": "2023-03-10T22:24:28.303Z",
+    "dateExported": "2023-03-11T02:38:49.858Z",
     "version": "1.1",
     "folders": [],
     "requests": [
@@ -14,12 +14,12 @@
             "method": "POST",
             "sortNum": 5000,
             "created": "2023-03-10T21:10:58.230Z",
-            "modified": "2023-03-10T21:59:41.856Z",
+            "modified": "2023-03-11T02:35:45.039Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"uid\": \"abc123\",\n  \"event\": \"BCIT Grad Party\",\n  \"startTime\": \"2023-06-12T10:00\",\n  \"endTime\": \"2023-06-12T15:00\",\n  \"date\": \"2023-06-12\",\n  \"location\": \"BCIT\",\n  \"details\": \"Grad Party WOOOOOOOOOOOOH\",\n  \"attendees\": [],\n  \"tags\": [\"Dance music\"],\n  \"posts\": [\"This is so cool\"]\n}",
+                "raw": "{\n  \"uid\": \"abc123\",\n  \"event\": \"BCIT Grad Party\",\n  \"startTime\": \"2023-06-12T10:00\",\n  \"endTime\": \"2023-06-12T15:00\",\n  \"startDate\": \"2023-06-12\",\n  \"endDate\": \"2023-06-12\",\n  \"location\": \"BCIT\",\n  \"details\": \"Grad Party WOOOOOOOOOOOOH\",\n  \"image\": \" \",\n  \"attendees\": [],\n  \"tags\": [\"Dance music\"],\n  \"posts\": [\"This is so cool\"]\n}",
                 "form": []
             },
             "tests": [
@@ -99,12 +99,12 @@
             "method": "PUT",
             "sortNum": 40000,
             "created": "2023-03-10T21:29:29.249Z",
-            "modified": "2023-03-10T22:14:27.434Z",
+            "modified": "2023-03-11T02:35:51.708Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"uid\": \"dddd\",\n  \"event\": \"Park Meetup\",\n  \"startTime\": \"2023-06-15T10:00\",\n  \"endTime\": \"2023-06-15T15:00\",\n  \"date\": \"2023-06-15\",\n  \"location\": \"Victoria Park\",\n  \"details\": \"Let's meetup at the park and see the flowers\",\n  \"attendees\": [\"uid123\"],\n  \"tags\": [\"Family\"],\n  \"posts\": []\n}",
+                "raw": "{\n  \"uid\": \"dddd\",\n  \"event\": \"Park Meetup\",\n  \"startTime\": \"2023-06-15T10:00\",\n  \"endTime\": \"2023-06-15T15:00\",\n  \"startDate\": \"2023-06-15\",\n  \"endDate\": \"2023-06-15\",\n  \"location\": \"Victoria Park\",\n  \"details\": \"Let's meetup at the park and see the flowers\",\n  \"image\": \" \",\n  \"attendees\": [\"uid123\"],\n  \"tags\": [\"Family\"],\n  \"posts\": []\n}",
                 "form": []
             },
             "tests": [
@@ -121,16 +121,16 @@
             "colId": "4a454392-0c0c-474f-a0fa-06d4062a3ba7",
             "containerId": "",
             "name": "UPDATE EVENT",
-            "url": "http://localhost:3000/events/upsert/640bad180270714d9ea2f382",
+            "url": "http://localhost:3000/events/upsert/640be90d97f476f25061965e",
             "method": "PUT",
             "sortNum": 45000,
             "created": "2023-03-10T21:46:02.552Z",
-            "modified": "2023-03-10T22:20:38.295Z",
+            "modified": "2023-03-11T02:36:56.291Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"uid\": \"abc123\",\n  \"event\": \"BCIT Grad Party\",\n  \"startTime\": \"2023-06-12T10:00\",\n  \"endTime\": \"2023-06-12T15:00\",\n  \"date\": \"2023-06-12\",\n  \"location\": \"BCIT\",\n  \"details\": \"Grad Party\",\n  \"attendees\": [],\n  \"tags\": [\"Parties\"],\n  \"posts\": [\"This is so cool\"]\n}",
+                "raw": "{\n  \"uid\": \"abc123\",\n  \"event\": \"BCIT Grad Party\",\n  \"startTime\": \"2023-06-12T10:00\",\n  \"endTime\": \"2023-06-12T15:00\",\n  \"startDate\": \"2023-06-12\",\n  \"endDate\": \"2023-06-12\",\n  \"location\": \"BCIT\",\n  \"details\": \"Grad Party\",\n  \"image\": \" \",\n  \"attendees\": [],\n  \"tags\": [\"Parties\"],\n  \"posts\": [\"This is so cool\"]\n}",
                 "form": []
             },
             "tests": [

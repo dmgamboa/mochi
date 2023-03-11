@@ -28,13 +28,22 @@ export class Event {
         required: true,
         type: Date,
     })
-    date: Date;
+    startDate: Date;
+
+    @Prop({
+        required: true,
+        type: Date,
+    })
+    endDate: Date;
 
     @Prop({required: true})
     location: string;
 
     @Prop({required: true})
     details: string;
+
+    @Prop({required: true})
+    image: string;
 
     @Prop({
         required: true,

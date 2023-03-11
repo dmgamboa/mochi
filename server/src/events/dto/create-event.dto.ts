@@ -3,9 +3,11 @@ export class CreateEventDto {
   readonly event: string;
   readonly startTime: Date;
   readonly endTime: Date;
-  readonly date: Date;
+  readonly startDate: Date;
+  readonly endDate: Date;
   readonly location: string;
   readonly details: string;
+  readonly image: string;
   readonly attendees: string[];
   readonly tags: string[];
   readonly posts: string[];
