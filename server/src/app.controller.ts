@@ -3,22 +3,28 @@ import { Request } from 'express';
 import { AppService } from './app.service';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { UsersService } from './users/users.service';
+import { EventsService } from './events/events.service';
 import { AnyKeys, AnyObject } from 'mongoose';
 import { User } from './users/schemas/user.schema';
 import { Interval } from './enums/enums.notifInterval';
 import { Preferences } from './enums/enums.eventPreferences';
+import { CreateEventDto } from './events/dto/create-event.dto';
+import { EventHistoryDto } from './users/dto/event-history.dto';
 
 type BaseDoc<T> = AnyKeys<T> & AnyObject;
 
 @Controller()
 export class AppController {
   private readonly usersService: UsersService;
+  private readonly eventsService: EventsService;
   constructor(
     // @Inject(UsersService)
+    eventsService: EventsService,
     usersService: UsersService,
     private readonly appService: AppService,
   ) {
     this.usersService = usersService;
+    this.eventsService = eventsService;
   }
 
   @Get()
@@ -62,10 +68,56 @@ export class AppController {
   }
 
   @Post('/eventCreation')
-  getEventCreation(@Req() request: Request): string {
-    return JSON.stringify(request['body']);
-  }
+  async getEventCreation(@Req() request: Request): Promise<any> {
+    // return JSON.stringify(request['body']);
+    try {
+      var users: User[] = await this.usersService.find({
+        email: request['user']?.email,
+      });
 
+      if (users.length == 0) {
+        return 'User not found';
+      }
+
+      var doc_id = users[0]['_id'];
+
+    const newEvent: BaseDoc<Event> = {
+      uid :  request['user']?.uid,
+      event : request['body']?.title,
+      startTime : request['body']?.startTime,
+      endTime : request['body']?.endTime,
+      startDate : request['body']?.startDate,
+      endDate : request['body']?.endDate,
+      location : request['body']?.location,
+      details : request['body']?.details,
+      image : request['body']?.image,
+      attendees : request['body']?.attendees,
+      tags : request['body']?.tags,
+      posts : request['body']?.posts,
+    }
+
+    var createdEvent : any = await this.eventsService.create(newEvent as CreateEventDto);
+    console.log(createdEvent);
+    var eventId = createdEvent?._id.toString();
+    console.log(eventId);
+
+    var userEventData = 
+    [{
+      event_id: eventId,
+      event: createdEvent.event,
+      date: createdEvent.startTime,
+    }] as EventHistoryDto[];
+    console.log(userEventData);
+    
+    var test2 = await this.usersService.updateEventList(doc_id, userEventData);
+    console.log(test2);
+    return 'Successfully created event for ' + request['body']?.title + '!';
+  }
+    catch (error) {
+    console.log(error);
+    return 'Failed to create event.';
+  }
+}
 
   //for testing purposes, will be removed/refactored later
   @Post('/profileCreation')
@@ -87,9 +139,9 @@ export class AppController {
         uid: request['user']?.uid,
         profile_picture: request['body']?.profileImage,
         display_message: request['body']?.displayMessage,
-        friends: null,
+        friends: [],
         tags: request['body']?.interests,
-        events: null,
+        events: [],
         social_medias: [],
         settings: {
           friend_hot_notifications: [Interval.OFF],

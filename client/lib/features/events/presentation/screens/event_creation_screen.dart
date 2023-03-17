@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mochi/features/events/presentation/screens/events_screen.dart';
 import 'package:mochi/features/profile/presentation/screens/profile_screen.dart';
 
 import '../../../../core/config/colours.dart';
@@ -475,30 +476,36 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                       var response = await http.post(url,
                           headers: _headers,
                           body: jsonEncode({
-                            "eventImage": "https://picsum.photos/200",
+                            "image": "https://picsum.photos/200",
                             "location": locationController.text,
-                            "startDate": startDateISO,
-                            "endDate": endDateISO,
+                            "startTime": startDateISO,
+                            "endTime": endDateISO,
+                            "startDate": startDateController.text,
+                            "endDate": endDateController.text,
                             "title": displayNameController.text,
-                            "description": displayMessageController.text,
+                            "details": displayMessageController.text,
                             "attendees": [
                               "BXOz527GzqV5gmfOznA3D8e8gz41",
                               "BXOz527GzqV5gmfOznA3D8e8gz40"
                             ],
                             "tags": selectedTagsList,
+                            "posts": [
+                              "https://picsum.photos/200",
+                              "https://picsum.photos/200"
+                            ]
                           }));
                       ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
                         content: Text(response.body),
                         backgroundColor: Colors.green,
                       ));
-                      // await Future.delayed(const Duration(seconds: 5));
-                      // if (context.mounted) {
-                      //   Navigator.of(context).pushNamed(ProfileScreen.route);
-                      // }
+                      await Future.delayed(const Duration(seconds: 3));
+                      if (context.mounted) {
+                        Navigator.of(context).pushNamed(EventsScreen.route);
+                      }
 
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
-                      // ScaffoldMessenger.of(context).showSnackBar(
+                      // ScaffoldMessenger.of(this.context).showSnackBar(
                       //   const SnackBar(content: Text('Processing Data')),
                       // );
                     }

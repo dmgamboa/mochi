@@ -366,7 +366,7 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
             border: Border.all(
               color: isSelected! ? Colours.pink : Colors.grey[300]!,
             ),
-            color: isSelected! ? Colours.pink : Colors.white,
+            color: isSelected ? Colours.pink : Colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
