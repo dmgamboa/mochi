@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import 'package:mochi/core/widgets/nav_bar/nav_bar_item.dart';
-import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
+import 'package:mochi/features/chat/presentation/screens/chat_list_screen.dart';
 import 'package:mochi/features/contacts/presentation/screens/contacts_screen.dart';
 import 'package:mochi/features/discover/presentation/screens/discover_screen.dart';
 import 'package:mochi/features/events/presentation/screens/events_screen.dart';
@@ -24,7 +24,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     NavBarItem(
       icon: CupertinoIcons.chat_bubble_2,
       activeIcon: CupertinoIcons.chat_bubble_2_fill,
-      route: ChatScreen.route,
+      route: ChatListScreen.route,
     ),
     NavBarItem(
       icon: Icons.calendar_month_outlined,

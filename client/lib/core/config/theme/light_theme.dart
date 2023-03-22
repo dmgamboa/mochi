@@ -27,6 +27,9 @@ class LightTheme {
         bodyMedium: TextStyles.body.copyWith(fontSize: 14),
         labelLarge: TextStyles.heading.copyWith(fontSize: 20),
       ),
+      appBarTheme: const AppBarTheme(
+        titleSpacing: 0,
+      ),
       buttonTheme: const ButtonThemeData(
         buttonColor: Colours.pink,
         textTheme: ButtonTextTheme.primary,

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
@@ -12,7 +11,7 @@ import '../../domain/models/models.dart';
 import '../../data/datasources/datasources.dart';
 
 class ChatScreen extends StatefulWidget {
-  static const String route = '/chat';
+  static const String route = '/chat/:id';
 
   const ChatScreen({super.key});
 
@@ -21,13 +20,15 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final List<Message> _messages = [];
+  List<Message> _messages = [];
   String? _userId;
   late socket_io.Socket socket;
 
   @override
   void initState() {
     super.initState();
+    _userId = '1';
+    _messages = MessageRepository.fromMockData(ChatMockData.directMessages);
     socket = socket_io.io(
         kIsWeb ? 'http://localhost:3000' : 'http://10.0.2.2:3000',
         <String, dynamic>{
@@ -58,20 +59,22 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _sendMessage(String content, String? extension) {
     if (content.isNotEmpty) {
-      final message = extension == null
-          ? Message(
-              id: '',
-              sender: _userId!,
-              content: content,
-            )
-          : MediaMessage(
-              id: '',
-              sender: _userId!,
-              content: content,
-              extension: extension,
-            );
-      socket.emit('message', MessageRepository.toJSON(message));
-      setState(() => _messages.add(message));
+      // final message = extension == null
+      //     ? Message(
+      //         id: '',
+      //         sender: _userId!,
+      //         content: content,
+      //         createdAt: DateTime.now(),
+      //       )
+      //     : MediaMessage(
+      //         id: '',
+      //         sender: _userId!,
+      //         content: content,
+      //         extension: extension,
+      //         createdAt: DateTime.now(),
+      //       );
+      // socket.emit('message', MessageRepository.toJSON(message));
+      // setState(() => _messages.add(message));
     }
   }
 
@@ -80,6 +83,11 @@ class _ChatScreenState extends State<ChatScreen> {
     return Layout(
       pageTitle: 'Chat',
       navBar: false,
+      backBtn: true,
+      appBar: const ChatHeader(
+          title: 'Alice, Bob',
+          fireCount: 10,
+          avatar: 'https://picsum.photos/200?seed=1'),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 24.0),
         child: Column(
@@ -94,7 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: ChatMessage(
-                            fromSelf: message.sender == _userId,
+                            fromSelf: message.sender.id == _userId,
                             message: message,
                           ),
                         );

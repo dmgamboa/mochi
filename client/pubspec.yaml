@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  buttons_tabbar: ^1.3.6
   cupertino_icons: ^1.0.2
   curved_navigation_bar: ^1.0.3
   introduction_screen: ^3.1.4
@@ -22,6 +23,7 @@ dependencies:
   font_awesome_flutter: ^10.3.0
   flutter_riverpod: ^2.1.3
   flutter_svg: ^2.0.0+1
+  sliding_up_panel: ^2.0.0+1
   socket_io_client: ^2.0.1
   flutter_launcher_icons: ^0.12.0
   filter_list: ^1.0.2
@@ -30,6 +32,9 @@ dependencies:
   path_provider: ^2.0.13
   carousel_slider: ^4.2.1
   intl: ^0.17.0
+  path_drawing: ^1.0.1
+  collection: ^1.17.0
+  flutter_dotenv: ^5.0.2
 
 
 dev_dependencies:
@@ -51,9 +56,11 @@ flutter:
   uses-material-design: true
 
   assets:
+    - lib/.env
     - assets/brand/
     - assets/graphics/
     - assets/graphics/onboarding/
+    - assets/graphics/placeholder/
 
   fonts:
     - family: Baloo
