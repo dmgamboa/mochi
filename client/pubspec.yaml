@@ -60,7 +60,6 @@ flutter:
     - assets/brand/
     - assets/graphics/
     - assets/graphics/onboarding/
-    - assets/graphics/placeholder/
 
   fonts:
     - family: Baloo
