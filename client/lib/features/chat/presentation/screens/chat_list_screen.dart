@@ -6,7 +6,7 @@ import '../../domain/models/models.dart';
 import './chat_screen.dart';
 
 class ChatListScreen extends StatelessWidget {
-  static const String route = '/chat';
+  static const String route = '/chats';
   // final List<Chat> chats;
 
   ChatListScreen({
@@ -19,7 +19,19 @@ class ChatListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Layout(
-      pageTitle: 'Chats',
+      appBar: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text('Chats'),
+          const Spacer(),
+          GestureDetector(
+            onTap: () {
+              // TODO: Pull up Friends List
+            },
+            child: const Icon(Icons.add),
+          ),
+        ],
+      ),
       body: ListView.builder(
         itemCount: chats.length,
         itemBuilder: (context, index) {
@@ -27,7 +39,8 @@ class ChatListScreen extends StatelessWidget {
 
           return GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, ChatScreen.route);
+              Navigator.pushNamed(context, ChatScreen.route,
+                  arguments: ChatScreenArgs(chat: chat));
             },
             child: ListTile(
               leading: CircleAvatar(
@@ -48,7 +61,7 @@ class ChatListScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      chat.participants.map((user) => user.name).join(', '),
+                      chat.getTitle(chat.participants[0]),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,
                     ),
