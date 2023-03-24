@@ -21,7 +21,7 @@ class Routes {
     EventScreen.route: (args) => const EventScreen(),
     EventsScreen.route: (args) => const EventsScreen(),
     EventCreationScreen.route: (args) => const EventCreationScreen(),
-    ChatScreen.route: (args) => const ChatScreen(),
+    ChatScreen.route: (args) => ChatScreen(args: args as ChatScreenArgs),
     ChatListScreen.route: (args) => ChatListScreen(),
     ContactsScreen.route: (args) => ContactsScreen(),
     SigninScreen.route: (args) => const SigninScreen(),

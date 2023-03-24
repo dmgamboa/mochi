@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:mochi/core/models/user.dart';
+import 'package:mochi/core/utils/server_url.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 
 import 'package:mochi/core/widgets/layout/layout.dart';
@@ -10,42 +11,56 @@ import '../widgets/widgets.dart';
 import '../../domain/models/models.dart';
 import '../../data/datasources/datasources.dart';
 
-class ChatScreen extends StatefulWidget {
-  static const String route = '/chat/:id';
+class ChatScreenArgs {
+  final Chat chat;
 
-  const ChatScreen({super.key});
+  ChatScreenArgs({
+    required this.chat,
+  });
+}
+
+class ChatScreen extends StatefulWidget {
+  static const String route = '/chat';
+
+  final ChatScreenArgs args;
+
+  const ChatScreen({
+    required this.args,
+    super.key,
+  });
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  List<Message> _messages = [];
-  String? _userId;
+  late List<Message> messages;
+  User? user;
   late socket_io.Socket socket;
 
   @override
   void initState() {
     super.initState();
-    _userId = '1';
-    _messages = MessageRepository.fromMockData(ChatMockData.directMessages);
-    socket = socket_io.io(
-        kIsWeb ? 'http://localhost:3000' : 'http://10.0.2.2:3000',
-        <String, dynamic>{
-          'transports': ['websocket'],
-        });
+    // TODO: Query chat from params
+    final msgJson = widget.args.chat.participants.length == 2
+        ? ChatMockData.directMessages
+        : ChatMockData.groupMessages;
+    messages = MessageRepository.fromMockData(msgJson);
+    socket = socket_io.io(getServerUrl(), <String, dynamic>{
+      'transports': ['websocket'],
+    });
     socket.connect();
-    socket.on('connection', (id) {
-      setState(() {
-        _userId = _userId ?? id;
-      });
+    // TODO: Grab user id information from state
+    user = User.fromJson(ChatMockData.users.first);
+    socket.on('connection', (u) {
+      // Handle connection
     });
     socket.on(
       'message',
       (res) => setState(() {
         final data = jsonDecode(res) as Map<String, dynamic>;
-        if (data['sender'] != _userId) {
-          _messages.add(MessageRepository.fromJson(data));
+        if (data['sender'] != user?.toJSON()) {
+          messages.add(MessageRepository.fromJson(data));
         }
       }),
     );
@@ -59,22 +74,22 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _sendMessage(String content, String? extension) {
     if (content.isNotEmpty) {
-      // final message = extension == null
-      //     ? Message(
-      //         id: '',
-      //         sender: _userId!,
-      //         content: content,
-      //         createdAt: DateTime.now(),
-      //       )
-      //     : MediaMessage(
-      //         id: '',
-      //         sender: _userId!,
-      //         content: content,
-      //         extension: extension,
-      //         createdAt: DateTime.now(),
-      //       );
-      // socket.emit('message', MessageRepository.toJSON(message));
-      // setState(() => _messages.add(message));
+      final message = extension == null
+          ? Message(
+              id: '',
+              sender: user!,
+              content: content,
+              createdAt: DateTime.now(),
+            )
+          : MediaMessage(
+              id: '',
+              sender: user!,
+              content: content,
+              extension: extension,
+              createdAt: DateTime.now(),
+            );
+      socket.emit('message', MessageRepository.toJSON(message));
+      setState(() => messages.add(message));
     }
   }
 
@@ -84,25 +99,25 @@ class _ChatScreenState extends State<ChatScreen> {
       pageTitle: 'Chat',
       navBar: false,
       backBtn: true,
-      appBar: const ChatHeader(
-          title: 'Alice, Bob',
-          fireCount: 10,
+      appBar: ChatHeader(
+          title: widget.args.chat.getTitle(user!),
+          fireCount: widget.args.chat.streak,
           avatar: 'https://picsum.photos/200?seed=1'),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 24.0),
         child: Column(
           children: [
             Expanded(
-              child: _userId != null
+              child: user != null
                   ? ListView.builder(
                       reverse: true,
-                      itemCount: _messages.length,
+                      itemCount: messages.length,
                       itemBuilder: (context, index) {
-                        final message = _messages[_messages.length - 1 - index];
+                        final message = messages[messages.length - 1 - index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: ChatMessage(
-                            fromSelf: message.sender.id == _userId,
+                            fromSelf: message.sender.id == user!.id,
                             message: message,
                           ),
                         );
