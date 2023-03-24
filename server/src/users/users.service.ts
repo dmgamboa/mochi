@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
+import { EventHistoryDto } from './dto/event-history.dto';
 import { User, UserDocument } from './schemas/user.schema';
 
 // This is the service that will be used to interact with the database invloving the User model
@@ -54,8 +55,17 @@ export class UsersService {
   }
 
   //Update - updates existing document with matching id
-  async update(id: String, updateUserDto: CreateUserDto): Promise<User> {
-    const user = await this.userModel.findByIdAndUpdate(id, updateUserDto, {overwrite: false, upsert: false}).exec()
+  async update(id: String, body: any): Promise<User> {
+    const user = await this.userModel.findByIdAndUpdate(id, body, {overwrite: false, upsert: false}).exec()
+    .catch(err => {
+      return err.message;
+    });
+    return user;
+  }
+
+  //Update - updates existing document with matching id and adds event to events list
+  async updateEventList(id: string, event: EventHistoryDto[]): Promise<User> {
+    const user = await this.userModel.findByIdAndUpdate(id, {$push: {events: {$each: event}}}, {overwrite: false, upsert: false}).exec()
     .catch(err => {
       return err.message;
     });

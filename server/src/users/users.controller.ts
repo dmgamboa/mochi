@@ -76,9 +76,9 @@ export class UsersController {
     }
 
     @Put('/update/:id')
-    async update(@Param('id') id: string, @Body() updateUserDto: CreateUserDto): Promise<User> {
+    async update(@Param('id') id: string, @Body() body: any): Promise<User> {
         try {
-            const user = await this.usersService.update(id, updateUserDto);
+            const user = await this.usersService.update(id, body);
 
             if (user.name == null) {
                 throw new HttpException(user, 404);
