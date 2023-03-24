@@ -5,6 +5,7 @@ import { Tag } from '../../enums/enums.tag';
 import { Friend, FriendSchema } from './friend.schema';
 import { EventHistory, EventHistorySchema } from './eventHistory.schema';
 import { Settings, SettingsSchema } from './settings.schema';
+import { FriendRequest, FriendRequestSchema } from './friendRequest.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -25,10 +26,7 @@ export class User {
   @Prop({ required: true })
   display_message: string;
 
-  @Prop({
-    type: [FriendSchema],
-    //required: true,
-  })
+  @Prop({ type: [FriendSchema] })
   friends: Types.Array<Friend>;
 
   @Prop({
@@ -38,10 +36,7 @@ export class User {
   })
   tags: string[];
 
-  @Prop({
-    type: [EventHistorySchema],
-    //required: true,
-  })
+  @Prop({ type: [EventHistorySchema] })
   events: Types.Array<EventHistory>;
 
   @Prop({
@@ -56,6 +51,12 @@ export class User {
     required: true,
   })
   settings: Settings;
+
+  @Prop({ type: [FriendRequestSchema] })
+  requests_in: Types.Array<FriendRequest>;
+
+  @Prop({ type: [FriendRequestSchema] })
+  requests_out: Types.Array<FriendRequest>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

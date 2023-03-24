@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
+import 'package:mochi/features/chat/presentation/screens/chat_list_screen.dart';
 import 'package:mochi/features/contacts/presentation/screens/contacts_screen.dart';
 import 'package:mochi/features/discover/presentation/screens/discover_screen.dart';
 import 'package:mochi/features/events/presentation/screens/events_screen.dart';
@@ -19,7 +20,8 @@ class Routes {
     EventsScreen.route: (args) => const EventsScreen(),
     EventCreationScreen.route: (args) => const EventCreationScreen(),
     ChatScreen.route: (args) => const ChatScreen(),
-    ContactsScreen.route: (args) => const ContactsScreen(),
+    ChatListScreen.route: (args) => ChatListScreen(),
+    ContactsScreen.route: (args) => ContactsScreen(),
     SigninScreen.route: (args) => const SigninScreen(),
     SignupScreen.route: (args) => const SignupScreen(),
     ProfileScreen.route: (args) => const ProfileScreen(),

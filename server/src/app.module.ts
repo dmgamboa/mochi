@@ -25,7 +25,9 @@ import { EventsModule } from './events/events.module';
     UsersModule,
     EventsModule,
   ],
-  controllers: [AppController],
+  controllers: [
+    AppController
+  ],
   providers: [
     AppService,
     FirebaseService,
