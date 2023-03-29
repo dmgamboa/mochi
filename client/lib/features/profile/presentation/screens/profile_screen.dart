@@ -44,11 +44,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final firstItem = jsonResponse[0];
       final id = firstItem['_id'];
 
-      var url2 = Uri.parse('http://10.0.2.2:3000/users/findOne/$id');
-      final response2 = await http.get(url2, headers: _headers);
-
       setState(() {
-        _data = jsonDecode(response2.body);
+        _data = firstItem;
       });
       log(_data.toString());
     } catch (e) {
