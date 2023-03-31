@@ -52,6 +52,11 @@ export class User {
   })
   settings: Settings;
 
+  @Prop({
+    type: [String],
+  })
+  chats: string[];
+  
   @Prop({ type: [FriendRequestSchema] })
   requests_in: Types.Array<FriendRequest>;
 

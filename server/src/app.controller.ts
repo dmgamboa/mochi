@@ -219,15 +219,16 @@ export class AppController {
         user_in.requests_in.map(async (requestIn) => {
           const user = await this.usersController.findOne(requestIn.uid);
           return {
-            uid: requestIn.uid,
+            user :{
+              uid: user.uid,
+              name: user.name,
+              profile_picture: user.profile_picture,
+              display_message: user.display_message,
+            },
             date: requestIn.date,
-            name: user.name,
-            profile_picture: user.profile_picture,
           };
-        }),
+        })
       );
-
-      console.log(payload);
 
       return payload;
     } catch (err) {
@@ -248,14 +249,17 @@ export class AppController {
         user_out.requests_out.map(async (requestOut) => {
           const user = await this.usersController.findOne(requestOut.uid);
           return {
-            uid: requestOut.uid,
+            user: {
+              uid: user.uid,
+              name: user.name,
+              profile_picture: user.profile_picture,
+              display_message: user.display_message,
+            },
             date: requestOut.date,
-            name: user.name,
-            profile_picture: user.profile_picture,
           };
-        }),
+        })
       );
-
+      
       return payload;
     } catch (err) {
       console.log(err);

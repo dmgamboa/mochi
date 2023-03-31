@@ -15,6 +15,7 @@ export class CreateUserDto {
   readonly events: Types.Array<EventHistory>;
   readonly social_medias: string[];
   readonly settings: Settings;
+  readonly chats: string[];
   readonly requests_in: Types.Array<FriendRequest>;
   readonly requests_out: Types.Array<FriendRequest>;
 }
