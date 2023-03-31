@@ -17,6 +17,7 @@ import { FirebaseService } from './firebase/firebase.service';
 
 import { PreAuthMiddleware } from './auth/preauth.middleware';
 import { EventsModule } from './events/events.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { EventsModule } from './events/events.module';
     MongooseModule.forRoot(process.env.MONGO_CONN_URL),
     UsersModule,
     EventsModule,
+    ChatModule,
   ],
   controllers: [
     AppController
