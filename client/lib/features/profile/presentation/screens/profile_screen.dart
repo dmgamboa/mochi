@@ -40,6 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       };
 
       final response = await http.get(url, headers: _headers);
+      log(response.body.toString());
       final jsonResponse = jsonDecode(response.body);
       final firstItem = jsonResponse[0];
       final id = firstItem['_id'];

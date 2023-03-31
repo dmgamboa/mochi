@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
+import { Attendee, AttendeeSchema } from 'src/users/schemas/attendee.schema';
 import { Tag } from '../../enums/enums.tag';
 
 export type EventDocument = HydratedDocument<Event>;
@@ -46,10 +47,9 @@ export class Event {
     image: string;
 
     @Prop({
-        required: true,
-        type: [String],
+        type: [AttendeeSchema],
     })
-    attendees: string[];
+    attendees: Types.Array<Attendee>;
 
     @Prop({
         required: true,

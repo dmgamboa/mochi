@@ -29,7 +29,7 @@ export class EventsController {
     @Post('/find')
     async find(@Body() query): Promise<Event[]> {
         try {
-            const events = await this.eventsService.find(query.body);
+            const events = await this.eventsService.find(query);
 
             if (events.length == 0) {
                 throw new HttpException(events, 404);

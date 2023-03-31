@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:mochi/core/config/routes.dart';
+import 'package:mochi/features/events/presentation/screens/event_screen.dart';
 import 'package:mochi/features/chat/presentation/screens/chat_list_screen.dart';
 import 'core/config/theme/light_theme.dart';
 
@@ -28,7 +29,7 @@ class MochiApp extends StatelessWidget {
       title: 'Mochi',
       theme: LightTheme.theme,
       onGenerateRoute: Routes.generate,
-      initialRoute: ChatListScreen.route,
+      initialRoute: EventScreen.route,
       // initialRoute: SplashScreen.route,
     );
   }

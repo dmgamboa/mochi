@@ -14,13 +14,13 @@ class FriendRequestsRepository {
   }
 
   static List<FriendRequest> fromServer(List<Map<String, dynamic>> requests) {
-    return requests
-        .map(
-          (e) => FriendRequest(
-            user: User.fromJson(e['user']),
-            dateSent: DateTime.parse(e['date']),
-          ),
-        )
-        .toList();
+    return requests.map(
+      (e) {
+        return FriendRequest(
+          user: User.fromJson(e['user'] ?? e),
+          dateSent: DateTime.parse(e['date']),
+        );
+      },
+    ).toList();
   }
 }

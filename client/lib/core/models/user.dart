@@ -25,4 +25,8 @@ class User {
       'display_message': statusMessage,
     };
   }
+
+  static List<dynamic> encodeUsersList(List<User> userList) {
+    return userList.map((user) => user.toJSON()).toList();
+  }
 }

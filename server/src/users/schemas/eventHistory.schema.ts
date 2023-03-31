@@ -12,6 +12,10 @@ export class EventHistory extends Document {
 
   @Prop({ required: true })
   date: Date;
+
+  //TODO: Make this a required field once we have a default image?
+  @Prop({ type: String })
+  image: String;
 }
 
 export const EventHistorySchema = SchemaFactory.createForClass(EventHistory);
