@@ -1,68 +1,58 @@
 class ChatMockData {
   static const List<Map<String, dynamic>> users = [
     {
-      "id": "1",
-      "name": "Alice",
-      "avatar": "https://picsum.photos/200?seed=1",
+      "uid": "YeF0h3dnBMYQG5nVioRmIExvqTq1",
+      "name": "Donna",
+      "profile_picture": "https://picsum.photos/200",
+      "role": "receiver"
     },
     {
-      "id": "2",
-      "name": "Bob",
-      "avatar": "https://picsum.photos/200?seed=2",
+      "uid": "n0MbIAXJ4VRDFf4AwKZJ0bbJa202",
+      "name": "Andy",
+      "profile_picture": "https://picsum.photos/200",
+      "role": "sender"
     },
     {
-      "id": "3",
-      "name": "Charlie",
-      "avatar": "https://picsum.photos/200?seed=3",
+      "uid": "n0MbIAXJ4VRDFf4AwKZJ0bbJa203",
+      "name": "Dustin",
+      "profile_picture": "https://picsum.photos/200",
     },
     {
-      "id": "4",
-      "name": "David",
-      "avatar": "https://picsum.photos/200?seed=4",
+      "uid": "n0MbIAXJ4VRDFf4AwKZJ0bbJa204",
+      "name": "Brendan",
+      "profile_picture": "https://picsum.photos/200",
+    },
+    {
+      "uid": "n0MbIAXJ4VRDFf4AwKZJ0bbJa204",
+      "name": "Vin",
+      "profile_picture": "https://picsum.photos/200",
     },
   ];
 
   static final directMessages = [
     {
-      'id': '1',
-      'sender': users[0],
-      'content': 'Hey, how are you?',
-      'createdAt': '2022-01-01T09:00:00Z',
-      'extension': '',
-    },
-    {
-      'id': '2',
-      'sender': users[1],
-      'content': 'I am doing great! How about you?',
-      'createdAt': '2022-01-01T09:05:00Z',
-      'extension': '',
-    },
-    {
-      'id': '3',
-      'sender': users[0],
-      'content': 'I am also doing great! Want to grab some coffee?',
-      'createdAt': '2022-01-01T09:10:00Z',
-      'extension': '',
-    },
+      "user_id": "n0MbIAXJ4VRDFf4AwKZJ0bbJa202",
+      "message": "hilo",
+      "type": "text",
+      "date": "2023-03-31T05:55:04.397Z",
+      "_id": "642675b80858a8f7af5b121c"
+    }
   ];
 
   static final groupMessages = [
     {
-      'id': '4',
       'sender': users[2],
       'content': 'Hey everyone, how was your weekend?',
       'createdAt': '2022-01-02T09:00:00Z',
       'extension': '',
     },
     {
-      'id': '5',
       'sender': users[0],
       'content': 'It was great! I went to the beach.',
       'createdAt': '2022-01-02T09:05:00Z',
       'extension': '',
     },
     {
-      'id': '6',
       'sender': users[1],
       'content': 'I stayed at home and watched Netflix.',
       'createdAt': '2022-01-02T09:10:00Z',
@@ -79,16 +69,44 @@ class ChatMockData {
 
   static final chats = [
     {
-      'id': '1',
-      'participants': [users[0], users[1]],
-      'lastMessage': directMessages.last,
-      'streak': '10'
-    },
-    {
-      'id': '2',
-      'participants': [users[0], users[1], users[1], users[2], users[3]],
-      'lastMessage': groupMessages.last,
-      'streak': '0'
+      "chat": {
+        "_id": "642675b80858a8f7af5b121b",
+        "participants": [
+          "YeF0h3dnBMYQG5nVioRmIExvqTq1",
+          "n0MbIAXJ4VRDFf4AwKZJ0bbJa202"
+        ],
+        "messages": [
+          {
+            "user_id": "n0MbIAXJ4VRDFf4AwKZJ0bbJa202",
+            "message": "hilo",
+            "type": "text",
+            "date": "2023-03-31T05:55:04.397Z",
+            "_id": "642675b80858a8f7af5b121c"
+          }
+        ],
+        "__v": 0
+      },
+      "participants": [
+        {
+          "uid": "YeF0h3dnBMYQG5nVioRmIExvqTq1",
+          "name": "Donna",
+          "profile_picture": "https://picsum.photos/200",
+          "role": "receiver"
+        },
+        {
+          "uid": "n0MbIAXJ4VRDFf4AwKZJ0bbJa202",
+          "name": "Andy",
+          "profile_picture": "https://picsum.photos/200",
+          "role": "sender"
+        }
+      ],
+      "last_message": {
+        "user_id": "n0MbIAXJ4VRDFf4AwKZJ0bbJa202",
+        "message": "hilo",
+        "type": "text",
+        "date": "2023-03-31T05:55:04.397Z",
+        "_id": "642675b80858a8f7af5b121c"
+      }
     }
   ];
 }

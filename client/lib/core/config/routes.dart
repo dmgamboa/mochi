@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mochi/features/chat/presentation/screens/new_chat_screen.dart';
 import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
 import 'package:mochi/features/chat/presentation/screens/chat_list_screen.dart';
 import 'package:mochi/features/contacts/presentation/screens/contacts_screen.dart';
@@ -23,7 +24,8 @@ class Routes {
     EventCreationScreen.route: (args) => const EventCreationScreen(),
     ChatScreen.route: (args) => ChatScreen(args: args as ChatScreenArgs),
     ChatListScreen.route: (args) => ChatListScreen(),
-    ContactsScreen.route: (args) => ContactsScreen(),
+    NewChatScreen.route: (args) => const NewChatScreen(),
+    ContactsScreen.route: (args) => const ContactsScreen(),
     SigninScreen.route: (args) => const SigninScreen(),
     SignupScreen.route: (args) => const SignupScreen(),
     ProfileScreen.route: (args) => const ProfileScreen(),

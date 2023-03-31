@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:mochi/core/models/user.dart';
 import 'package:mochi/core/utils/server_url.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
@@ -35,31 +36,24 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   late List<Message> messages;
-  User? user;
+  String? userId = '';
   late socket_io.Socket socket;
 
   @override
   void initState() {
     super.initState();
-    // TODO: Query chat from params
-    final msgJson = widget.args.chat.participants.length == 2
-        ? ChatMockData.directMessages
-        : ChatMockData.groupMessages;
-    messages = MessageRepository.fromMockData(msgJson);
+    userId = firebase_auth.FirebaseAuth.instance.currentUser?.uid ?? '';
+    // TODO: Get messages
     socket = socket_io.io(getServerUrl(), <String, dynamic>{
       'transports': ['websocket'],
     });
     socket.connect();
-    // TODO: Grab user id information from state
-    user = User.fromJson(ChatMockData.users.first);
-    socket.on('connection', (u) {
-      // Handle connection
-    });
+    socket.on('connection', (u) {});
     socket.on(
       'message',
       (res) => setState(() {
         final data = jsonDecode(res) as Map<String, dynamic>;
-        if (data['sender'] != user?.toJSON()) {
+        if (data['user_id'] != userId) {
           messages.add(MessageRepository.fromJson(data));
         }
       }),
@@ -76,16 +70,16 @@ class _ChatScreenState extends State<ChatScreen> {
     if (content.isNotEmpty) {
       final message = extension == null
           ? Message(
-              id: '',
-              sender: user!,
+              senderId: userId ?? '',
               content: content,
+              type: MessageType.text,
               createdAt: DateTime.now(),
             )
           : MediaMessage(
-              id: '',
-              sender: user!,
+              senderId: userId ?? '',
               content: content,
               extension: extension,
+              type: MessageType.image,
               createdAt: DateTime.now(),
             );
       socket.emit('message', MessageRepository.toJSON(message));
@@ -100,7 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
       navBar: false,
       backBtn: true,
       appBar: ChatHeader(
-          title: widget.args.chat.getTitle(user!),
+          title: widget.args.chat.getTitle(userId!),
           fireCount: widget.args.chat.streak,
           avatar: 'https://picsum.photos/200?seed=1'),
       body: Padding(
@@ -108,7 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             Expanded(
-              child: user != null
+              child: userId != null
                   ? ListView.builder(
                       reverse: true,
                       itemCount: messages.length,
@@ -117,7 +111,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: ChatMessage(
-                            fromSelf: message.sender.id == user!.id,
+                            fromSelf: message.senderId == userId,
                             message: message,
                           ),
                         );

@@ -1,22 +1,21 @@
-import 'package:mochi/core/models/models.dart';
-
+import './enums.dart';
 import './message.dart';
 
 class MediaMessage extends Message {
   final String extension;
 
   MediaMessage({
-    required String id,
-    required User sender,
+    required String senderId,
     required String content,
+    required MessageType type,
     required this.extension,
     bool read = false,
     required DateTime createdAt,
   }) : super(
-          id: id,
-          sender: sender,
+          senderId: senderId,
           content: content,
           read: read,
           createdAt: createdAt,
+          type: type,
         );
 }

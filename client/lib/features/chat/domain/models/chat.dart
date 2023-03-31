@@ -17,13 +17,13 @@ class Chat {
     this.title = '',
   });
 
-  String getTitle(User user) {
+  String getTitle(String userId) {
     if (title.isNotEmpty) {
       return title;
     }
 
     final otherParticipants =
-        participants.where((p) => p.id != user.id).toList();
+        participants.where((p) => p.id != userId).toList();
     if (otherParticipants.length == 1) {
       return otherParticipants.first.name;
     }
