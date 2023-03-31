@@ -51,7 +51,6 @@ export class UsersService {
 
   //Find users by name
   async findByName(name: string): Promise<User[]> {
-    console.log('findByName', name)
     const users = await this.userModel.find({name: name}).exec().catch(err => {
       return err.message;
     });
@@ -61,7 +60,6 @@ export class UsersService {
   //Find user's friends list by id
   async findFriends(id: string): Promise<Friend[]> {
     const user = await this.userModel.findOne({uid: id}).exec();
-    console.log('findFriends', user)
 
     if (!user) {
       return null;
