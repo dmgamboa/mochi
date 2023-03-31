@@ -18,7 +18,7 @@ class Routes {
     SplashScreen.route: (args) => const SplashScreen(),
     OnboardingScreen.route: (args) => const OnboardingScreen(),
     DiscoverScreen.route: (args) => const DiscoverScreen(),
-    EventScreen.route: (args) => const EventScreen(),
+    EventScreen.route: (args) => EventScreen(args: args as EventScreenArgs),
     EventsScreen.route: (args) => const EventsScreen(),
     EventCreationScreen.route: (args) => const EventCreationScreen(),
     ChatScreen.route: (args) => const ChatScreen(),
