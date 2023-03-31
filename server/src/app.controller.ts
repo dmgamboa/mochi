@@ -1,4 +1,11 @@
-import { Controller, Get, Req, Post, Inject, HttpException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  Post,
+  Inject,
+  HttpException,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { AppService } from './app.service';
 import { CreateUserDto } from './users/dto/create-user.dto';
@@ -73,56 +80,60 @@ export class AppController {
 
   @Post('/eventCreation')
   async getEventCreation(@Req() request: Request): Promise<any> {
-    // return JSON.stringify(request['body']);
     try {
-      var users: User[] = await this.usersService.find({
+      const users: User[] = await this.usersService.find({
         email: request['user']?.email,
       });
 
-      if (users.length == 0) {
+      if (!users) {
         return 'User not found';
       }
 
-      var doc_id = users[0]['_id'];
+      const doc_id = users[0]['_id'];
 
-    const newEvent: BaseDoc<Event> = {
-      uid :  request['user']?.uid,
-      event : request['body']?.title,
-      startTime : request['body']?.startTime,
-      endTime : request['body']?.endTime,
-      startDate : request['body']?.startDate,
-      endDate : request['body']?.endDate,
-      location : request['body']?.location,
-      details : request['body']?.details,
-      image : request['body']?.image,
-      attendees : request['body']?.attendees,
-      tags : request['body']?.tags,
-      posts : request['body']?.posts,
+      const newEvent: BaseDoc<Event> = {
+        uid: request['user']?.uid,
+        event: request['body']?.title,
+        startTime: request['body']?.startTime,
+        endTime: request['body']?.endTime,
+        startDate: request['body']?.startDate,
+        endDate: request['body']?.endDate,
+        location: request['body']?.location,
+        details: request['body']?.details,
+        image: request['body']?.image,
+        attendees: request['body']?.attendees,
+        tags: request['body']?.tags,
+        posts: request['body']?.posts,
+      };
+
+      const createdEvent: any = await this.eventsService.create(
+        newEvent as CreateEventDto,
+      );
+
+      if (!createdEvent._id) {
+        throw new HttpException('Failed to create event.', 500);
+      }
+      const eventId = createdEvent._id.toString();
+      const userEventData = [
+        {
+          event_id: eventId,
+          event: createdEvent.event,
+          date: createdEvent.startTime,
+          image: createdEvent.image,
+        },
+      ] as EventHistoryDto[];
+
+      await this.usersService.updateEventList(doc_id, userEventData);
+
+      return {
+        eventId,
+        msg: `Successfully created event for ${request['body']?.title}!`,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException('Failed to create event.', 500);
     }
-
-    var createdEvent : any = await this.eventsService.create(newEvent as CreateEventDto);
-    console.log(createdEvent);
-    var eventId = createdEvent?._id.toString();
-    console.log(eventId);
-
-    var userEventData = 
-    [{
-      event_id: eventId,
-      event: createdEvent.event,
-      date: createdEvent.startTime,
-      image: createdEvent.image,
-    }] as EventHistoryDto[];
-    console.log(userEventData);
-    
-    var test2 = await this.usersService.updateEventList(doc_id, userEventData);
-    console.log(test2);
-    return 'Successfully created event for ' + request['body']?.title + '!';
   }
-    catch (error) {
-    console.log(error);
-    return 'Failed to create event.';
-  }
-}
 
   //for testing purposes, will be removed/refactored later
   @Post('/profileCreation')
@@ -171,11 +182,16 @@ export class AppController {
   @Post('/sendFriendRequest')
   async sendFriendRequest(@Req() request: Request): Promise<any> {
     try {
-      await this.usersService.updateRequestsOut(request['user']?.uid, request['body']?.uid);
-      await this.usersService.updateRequestsIn(request['body']?.uid, request['user']?.uid);
+      await this.usersService.updateRequestsOut(
+        request['user']?.uid,
+        request['body']?.uid,
+      );
+      await this.usersService.updateRequestsIn(
+        request['body']?.uid,
+        request['user']?.uid,
+      );
       return 'Successfully sent friend request!';
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
       return 'Failed to send friend request.';
     }
@@ -185,27 +201,35 @@ export class AppController {
   async handleFriendRequest(@Req() request: Request): Promise<any> {
     try {
       if (request['body']?.accept == true) {
-        await this.usersService.updateFriendsList(request['user']?.uid, request['body']?.uid);
-        await this.usersService.updateFriendsList(request['body']?.uid, request['user']?.uid);
+        await this.usersService.updateFriendsList(
+          request['user']?.uid,
+          request['body']?.uid,
+        );
+        await this.usersService.updateFriendsList(
+          request['body']?.uid,
+          request['user']?.uid,
+        );
       }
-      const { user_in } = await this.usersService.deleteRequests(request['user']?.uid, request['body']?.uid);
+      const { user_in } = await this.usersService.deleteRequests(
+        request['user']?.uid,
+        request['body']?.uid,
+      );
 
       const payload = await Promise.all(
         user_in.requests_in.map(async (requestIn) => {
-            const user = await this.usersController.findOne(requestIn.uid);
-            return {
-                uid: requestIn.uid,
-                date: requestIn.date,
-                name: user.name,
-                profile_picture: user.profile_picture,
-            };
-        })
+          const user = await this.usersController.findOne(requestIn.uid);
+          return {
+            uid: requestIn.uid,
+            date: requestIn.date,
+            name: user.name,
+            profile_picture: user.profile_picture,
+          };
+        }),
       );
 
-      console.log(payload)
+      console.log(payload);
 
-      return payload
-
+      return payload;
     } catch (err) {
       console.log(err);
       throw new HttpException(err, 500);
@@ -215,22 +239,24 @@ export class AppController {
   @Post('/cancelFriendRequest')
   async cancelFriendRequest(@Req() request: Request): Promise<any> {
     try {
-      const { user_out } = await this.usersService.deleteRequests(request['body']?.uid, request['user']?.uid);
+      const { user_out } = await this.usersService.deleteRequests(
+        request['body']?.uid,
+        request['user']?.uid,
+      );
 
       const payload = await Promise.all(
         user_out.requests_out.map(async (requestOut) => {
-            const user = await this.usersController.findOne(requestOut.uid);
-            return {
-                uid: requestOut.uid,
-                date: requestOut.date,
-                name: user.name,
-                profile_picture: user.profile_picture,
-            };
-        })
+          const user = await this.usersController.findOne(requestOut.uid);
+          return {
+            uid: requestOut.uid,
+            date: requestOut.date,
+            name: user.name,
+            profile_picture: user.profile_picture,
+          };
+        }),
       );
-      
-      return payload
 
+      return payload;
     } catch (err) {
       console.log(err);
       throw new HttpException(err, 500);

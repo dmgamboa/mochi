@@ -3,20 +3,30 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mochi/core/utils/server_url.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../../core/config/colours.dart';
 
+class EventScreenArgs {
+  final String eventId;
+
+  EventScreenArgs({
+    required this.eventId,
+  });
+}
+
 class EventScreen extends StatefulWidget {
   static const String route = '/event';
 
-  // final String eventId = "6414f4c2194fc04d8ff74a50";
-  final String eventId = "64262b77f09daeb449d9221c";
+  final EventScreenArgs args;
 
-  // const EventScreen({Key? key, required this.eventId}) : super(key: key);
-  const EventScreen({Key? key}) : super(key: key);
+  const EventScreen({
+    required this.args,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<EventScreen> createState() => _EventScreenState();
@@ -32,12 +42,10 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   Future<void> _parseTime() async {
-    log("inside parse time");
     final rawStartDate = _data['startDate'];
     final rawEndDate = _data['endDate'];
     final rawStartTime = _data['startTime'];
     final rawEndTime = _data['endTime'];
-    log(rawStartDate);
 
     final parsedStartDate = DateTime.parse(rawStartDate);
     final parsedEndDate = DateTime.parse(rawEndDate);
@@ -55,28 +63,26 @@ class _EventScreenState extends State<EventScreen> {
       _data['startTimeParsed'] = startTime;
       _data['endTimeParsed'] = endTime;
     });
-
-    // var time = DateTime.parse(_data['eventDate']);
-    // log(time.toString());
   }
 
   Future<void> _getData() async {
     try {
-      log('inside get data');
       var tokenId = await FirebaseAuth.instance.currentUser!.getIdToken(true);
       var body = {
-        '_id': widget.eventId,
+        '_id': widget.args.eventId,
       };
 
-      var url = Uri.http('10.0.2.2:3000', '/events/find');
-      var _headers = {
+      var url = Uri.parse('${getServerUrl()}events/find');
+      var headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $tokenId',
       };
 
-      final response =
-          await http.post(url, headers: _headers, body: jsonEncode(body));
-      log(response.body);
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(body),
+      );
       List<dynamic> jsonResponse = jsonDecode(response.body);
       Map<String, dynamic> event = Map<String, dynamic>.from(jsonResponse[0]);
 
@@ -84,11 +90,8 @@ class _EventScreenState extends State<EventScreen> {
         _data = event;
         _parseTime();
       });
-      log('in success');
-      log(_data.toString());
     } catch (e) {
-      log('in error catch');
-      log(e.toString());
+      log('EventScreen error: ${e.toString()}');
     }
   }
 

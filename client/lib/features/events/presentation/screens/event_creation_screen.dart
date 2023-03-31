@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -7,18 +6,18 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mochi/core/utils/server_url.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mochi/features/events/presentation/screens/events_screen.dart';
-import 'package:mochi/features/profile/presentation/screens/profile_screen.dart';
 
 import '../../../../core/config/colours.dart';
 import '../../../contacts/data/datasources/friends_remote_datasource.dart';
 import '../../../contacts/data/respository/repository.dart';
 import '../../../discover/presentation/screens/discover_screen.dart';
+import './event_screen.dart';
 import 'package:mochi/core/models/models.dart' as models;
-// import 'package:mochi/core/models/user.dart';
 
 import 'package:mochi/core/enums/interestsList.dart' as interests_list;
 
@@ -86,10 +85,12 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
             child: Column(children: [
               const Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Text('Create An Event',
-                    style: TextStyle(
-                      fontSize: 30,
-                    )),
+                child: Text(
+                  'Create An Event',
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
               ),
               imageProfile(),
               Padding(
@@ -389,35 +390,6 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                   ),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.fromLTRB(30, 10, 0, 0),
-              //   child: Align(
-              //     alignment: Alignment.centerLeft,
-              //     child: Text("Attendees",
-              //         style:
-              //             Theme.of(context).textTheme.headlineSmall!.copyWith(
-              //                   color: Colors.black,
-              //                 )),
-              //   ),
-              // ),
-              // Padding(
-              //   padding:
-              //       const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-              //   child: Align(
-              //       alignment: Alignment.centerLeft,
-              //       child: ElevatedButton(
-              //         onPressed: () {
-              //           _openAttendeeDialog();
-              //         },
-              //         style: ElevatedButton.styleFrom(
-              //           shape: const CircleBorder(),
-              //           padding: const EdgeInsets.all(10),
-              //           backgroundColor: Colours.blueGreen, // <-- Button color
-              //           foregroundColor: Colors.white, // <-- Splash color
-              //         ),
-              //         child: const FaIcon(FontAwesomeIcons.plus, size: 20),
-              //       )),
-              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -533,12 +505,11 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: ElevatedButton(
                   onPressed: () async {
-                    // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
                       var tokenId = await FirebaseAuth.instance.currentUser!
                           .getIdToken(true);
-                      var url = Uri.parse('http://10.0.2.2:3000/eventCreation');
-                      var _headers = {
+                      var url = Uri.parse('${getServerUrl()}eventCreation');
+                      var headers = {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer $tokenId',
                       };
@@ -547,7 +518,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                       var startDateISO = startDate.toIso8601String();
                       var endDateISO = endDate.toIso8601String();
                       var response = await http.post(url,
-                          headers: _headers,
+                          headers: headers,
                           body: jsonEncode({
                             "image": "https://picsum.photos/200",
                             "location": locationController.text,
@@ -564,13 +535,19 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                               "https://picsum.photos/200"
                             ]
                           }));
-                      ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-                        content: Text(response.body),
-                        backgroundColor: Colors.green,
-                      ));
-                      await Future.delayed(const Duration(seconds: 3));
-                      if (context.mounted) {
-                        Navigator.of(context).pushNamed(EventsScreen.route);
+                      if (response.statusCode == 201 && context.mounted) {
+                        final res = jsonDecode(response.body);
+
+                        ScaffoldMessenger.of(this.context)
+                            .showSnackBar(SnackBar(
+                          content: Text(res['msg'] ?? ''),
+                          backgroundColor: Colors.green,
+                        ));
+
+                        Navigator.of(context).pushNamed(
+                          EventScreen.route,
+                          arguments: EventScreenArgs(eventId: res['eventId']),
+                        );
                       }
 
                       // If the form is valid, display a snackbar. In the real world,
@@ -889,28 +866,11 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                         fontSize: 18,
                       ),
                     ),
-                    // if (user.statusMessage != '')
-                    //   Padding(
-                    //     padding: const EdgeInsets.only(top: 4.0),
-                    //     child: Text(
-                    //       user.statusMessage,
-                    //       maxLines: 2,
-                    //       overflow: TextOverflow.ellipsis,
-                    //       style: const TextStyle(
-                    //         color: Colors.grey,
-                    //       ),
-                    //     ),
-                    //   ),
                   ],
                 ),
               ),
             ],
           ),
-          // child: Text(
-          //   item,
-          //   style:
-          //       TextStyle(color: isSelected ? Colors.white : Colors.grey[500]),
-          // ),
         );
       },
     );
@@ -918,53 +878,6 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
 
   void getFriends() async {
     final res = FriendsListRepository.fromServer(await source.getFriends());
-    log('getFriends()');
-    log(res.toString());
     setState(() => friendsList = res);
   }
-
-  // void getFriends() async {
-  //   try {
-  //     print('print test');
-  //     var tokenId = await FirebaseAuth.instance.currentUser!.getIdToken(true);
-  //     var queryParameters = {
-  //       'email': '${FirebaseAuth.instance.currentUser!.email}'
-  //     };
-  //     var url = Uri.http('10.0.2.2:3000', '/users/find', queryParameters);
-  //     var _headers = {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'Bearer $tokenId',
-  //     };
-
-  //     final response = await http.get(url, headers: _headers);
-  //     log(response.body);
-  //     final jsonResponse = jsonDecode(response.body);
-  //     final userData = jsonResponse[0];
-  //     // log(userData);
-  //     final friends = userData['friends'];
-  //     List<String> uidList = [];
-  //     // List<dynamic> friends = responseJson[0]['friends'];
-  //     if (friends != null && friends.isNotEmpty) {
-  //       for (var friend in friends) {
-  //         uidList.add(friend['uid']);
-  //       }
-  //       for (var uid in uidList) {
-  //         log(uid);
-  //       }
-  //       // log(uidList);
-  //       log('inside friend check');
-  //       print(friends);
-  //     } else {
-  //       log('No friends found');
-  //     }
-  //     // final friendNames = friends.map((friend) => friend.toString()).toList();
-
-  //     log("inside getFriends");
-  //     // log(friendNames);
-  //     log("inbetween");
-  //     // log(friends.toString());
-  //   } catch (e) {
-  //     log(e.toString());
-  //   }
-  // }
 }

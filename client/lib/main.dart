@@ -3,12 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:mochi/core/config/routes.dart';
-import 'package:mochi/features/events/presentation/screens/event_screen.dart';
-import 'package:mochi/features/chat/presentation/screens/chat_list_screen.dart';
+import 'package:mochi/features/chat/presentation/screens/chat_screen.dart';
 import 'core/config/theme/light_theme.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-// import 'features/splash/presentation/screens/splash.dart';
+import 'features/splash/presentation/screens/splash.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -29,8 +28,7 @@ class MochiApp extends StatelessWidget {
       title: 'Mochi',
       theme: LightTheme.theme,
       onGenerateRoute: Routes.generate,
-      initialRoute: EventScreen.route,
-      // initialRoute: SplashScreen.route,
+      initialRoute: SplashScreen.route,
     );
   }
 }
