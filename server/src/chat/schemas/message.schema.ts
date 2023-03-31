@@ -8,7 +8,7 @@ export class Message extends Document {
   user_id: string;
 
   @Prop({ required: true })
-  message: string;
+  content: string;
 
   @Prop({
     enum: MessageType,
