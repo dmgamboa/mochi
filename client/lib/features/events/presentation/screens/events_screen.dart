@@ -1,7 +1,13 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mochi/features/events/presentation/screens/event_creation_screen.dart';
+import 'package:mochi/features/events/presentation/screens/event_screen.dart';
 
 import 'dart:developer';
 
@@ -17,6 +23,15 @@ class EventsScreen extends StatefulWidget {
 }
 
 class _EventsScreenState extends State<EventsScreen> {
+  Map<String, dynamic> _data = {};
+  List<Widget> userImageSliders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Layout(
@@ -46,14 +61,22 @@ class _EventsScreenState extends State<EventsScreen> {
                     ],
                   )),
             ),
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: false,
-                aspectRatio: 2.0,
-                enlargeCenterPage: true,
-              ),
-              items: imageSliders,
-            ),
+            (userImageSliders.isNotEmpty
+                ? CarouselSlider(
+                    options: CarouselOptions(
+                      autoPlay: false,
+                      aspectRatio: 2.0,
+                      enlargeCenterPage: true,
+                    ),
+                    items: userImageSliders,
+                  )
+                : const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
+                    child: Text(
+                      "No Events Created Yet..",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               child: Align(
@@ -158,6 +181,103 @@ class _EventsScreenState extends State<EventsScreen> {
 
   createEvent() {
     log('create event');
+  }
+
+  Future<void> _getData() async {
+    try {
+      var tokenId = await FirebaseAuth.instance.currentUser!.getIdToken(true);
+      var queryParameters = {
+        'email': '${FirebaseAuth.instance.currentUser!.email}'
+      };
+      var url = Uri.http('10.0.2.2:3000', '/users/find', queryParameters);
+      var _headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $tokenId',
+      };
+
+      final response = await http.get(url, headers: _headers);
+      log(response.body.toString());
+      final jsonResponse = jsonDecode(response.body);
+      final firstItem = jsonResponse[0];
+      final id = firstItem['_id'];
+
+      setState(() {
+        _data = firstItem;
+        setUserImageSliders();
+      });
+      log(_data.toString());
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  void setUserImageSliders() {
+    userImageSliders = _data['events']
+        .map<Widget>((item) => GestureDetector(
+              onTap: () {
+                // log('clicked on ${item['event']}');
+                Navigator.of(context).pushNamed(EventScreen.route,
+                    arguments: EventScreenArgs(eventId: item['event_id']));
+              },
+              child: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    child: Stack(
+                      children: <Widget>[
+                        Image.network(item['image'],
+                            fit: BoxFit.cover, width: 1000.0),
+                        Positioned(
+                          bottom: 0.0,
+                          left: 0.0,
+                          right: 0.0,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color.fromARGB(200, 0, 0, 0),
+                                  Color.fromARGB(0, 0, 0, 0)
+                                ],
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item['event'],
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  // DateFormat('yyyy-MM-dd').format(item['date']),
+                                  DateFormat('MMMM dd, yyyy')
+                                      .format(DateTime.parse(item['date'])),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+              ),
+            ))
+        .toList();
+    setState(() {
+      userImageSliders = userImageSliders;
+    });
   }
 }
 

@@ -1,12 +1,15 @@
 import 'dart:developer';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../../core/config/colours.dart';
+import '../../../events/presentation/screens/event_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String route = '/profile';
@@ -19,6 +22,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic> _data = {};
+  List<Widget> userImageSliders = [];
 
   @override
   void initState() {
@@ -47,11 +51,84 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       setState(() {
         _data = firstItem;
+        setUserImageSliders();
       });
       log(_data.toString());
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  void setUserImageSliders() {
+    log('inside set user image sliders');
+    print('inside set user image sliders');
+    print(_data['events']);
+    userImageSliders = _data['events']
+        .map<Widget>((item) => GestureDetector(
+              onTap: () {
+                // log('clicked on ${item['event']}');
+                Navigator.of(context).pushNamed(EventScreen.route,
+                    arguments: EventScreenArgs(eventId: item['event_id']));
+              },
+              child: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    child: Stack(
+                      children: <Widget>[
+                        Image.network(item['image'],
+                            fit: BoxFit.cover, width: 1000.0),
+                        Positioned(
+                          bottom: 0.0,
+                          left: 0.0,
+                          right: 0.0,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color.fromARGB(200, 0, 0, 0),
+                                  Color.fromARGB(0, 0, 0, 0)
+                                ],
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item['event'],
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  // DateFormat('yyyy-MM-dd').format(item['date']),
+                                  DateFormat('MMMM dd, yyyy')
+                                      .format(DateTime.parse(item['date'])),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+              ),
+            ))
+        .toList();
+    setState(() {
+      userImageSliders = userImageSliders;
+    });
   }
 
   @override
@@ -106,7 +183,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
               alignment: Alignment.centerLeft,
               child: Text("EVENTS", style: TextStyle(fontSize: 18))),
         ),
-        const Text("event carousel will go here..."),
+        (userImageSliders.isNotEmpty
+            ? CarouselSlider(
+                options: CarouselOptions(
+                  autoPlay: false,
+                  aspectRatio: 2.0,
+                  enlargeCenterPage: true,
+                ),
+                items: userImageSliders,
+              )
+            : const Padding(
+                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
+                child: Text(
+                  "No Events Created Yet..",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              )),
         const Padding(
           padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
           child: Align(
