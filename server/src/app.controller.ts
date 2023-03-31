@@ -110,6 +110,7 @@ export class AppController {
       event_id: eventId,
       event: createdEvent.event,
       date: createdEvent.startTime,
+      image: createdEvent.image,
     }] as EventHistoryDto[];
     console.log(userEventData);
     
@@ -200,6 +201,8 @@ export class AppController {
             };
         })
       );
+
+      console.log(payload)
 
       return payload
 

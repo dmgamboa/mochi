@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -13,7 +14,11 @@ import 'package:mochi/features/events/presentation/screens/events_screen.dart';
 import 'package:mochi/features/profile/presentation/screens/profile_screen.dart';
 
 import '../../../../core/config/colours.dart';
+import '../../../contacts/data/datasources/friends_remote_datasource.dart';
+import '../../../contacts/data/respository/repository.dart';
 import '../../../discover/presentation/screens/discover_screen.dart';
+import 'package:mochi/core/models/models.dart' as models;
+// import 'package:mochi/core/models/user.dart';
 
 import 'package:mochi/core/enums/interestsList.dart' as interests_list;
 
@@ -38,9 +43,15 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
   final startTimeController = TextEditingController();
   final endDateController = TextEditingController();
   final endTimeController = TextEditingController();
-  List<String> selectedTagsList = <String>[];
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
+
+  List<String> selectedTagsList = <String>[];
+  List<String> attendeesNameList = <String>[];
+  List<models.User> attendeesList = <models.User>[];
+  List<models.User> friendsList = <models.User>[];
+
+  late FriendsRemoteDataSource source;
 
   @override
   void dispose() {
@@ -56,6 +67,9 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
     endDateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     startTimeController.text = DateFormat('HH:mm').format(DateTime.now());
     endTimeController.text = DateFormat('HH:mm').format(DateTime.now());
+    source = FriendsRemoteDataSource();
+    getFriends();
+
     displayMessageController.addListener(() {
       setState(() {});
     });
@@ -375,32 +389,90 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(30, 10, 0, 0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text("Attendees",
-                      style:
-                          Theme.of(context).textTheme.headlineSmall!.copyWith(
+              // Padding(
+              //   padding: const EdgeInsets.fromLTRB(30, 10, 0, 0),
+              //   child: Align(
+              //     alignment: Alignment.centerLeft,
+              //     child: Text("Attendees",
+              //         style:
+              //             Theme.of(context).textTheme.headlineSmall!.copyWith(
+              //                   color: Colors.black,
+              //                 )),
+              //   ),
+              // ),
+              // Padding(
+              //   padding:
+              //       const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+              //   child: Align(
+              //       alignment: Alignment.centerLeft,
+              //       child: ElevatedButton(
+              //         onPressed: () {
+              //           _openAttendeeDialog();
+              //         },
+              //         style: ElevatedButton.styleFrom(
+              //           shape: const CircleBorder(),
+              //           padding: const EdgeInsets.all(10),
+              //           backgroundColor: Colours.blueGreen, // <-- Button color
+              //           foregroundColor: Colors.white, // <-- Splash color
+              //         ),
+              //         child: const FaIcon(FontAwesomeIcons.plus, size: 20),
+              //       )),
+              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(30, 10, 0, 0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Attendees",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(
                                 color: Colors.black,
                               )),
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(),
-                        padding: EdgeInsets.all(10),
-                        backgroundColor: Colours.blueGreen, // <-- Button color
-                        foregroundColor: Colors.white, // <-- Splash color
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: ElevatedButton.icon(
+                        icon: const FaIcon(FontAwesomeIcons.personCirclePlus,
+                            size: 20),
+                        style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                          ),
+                        ),
+                        onPressed: () {
+                          _openAttendeeDialog();
+                        },
+                        label: const Text("Invite"),
                       ),
-                      child: FaIcon(FontAwesomeIcons.plus, size: 20),
-                    )),
+                    ),
+                  ),
+                ],
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: (attendeesNameList.isNotEmpty)
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                        child: Wrap(
+                          children: buildAttendeeChips(),
+                        ),
+                      )
+                    : const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                        child: Text("No attendees selected yet...",
+                            style: TextStyle(color: Colors.grey)),
+                      ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -470,7 +542,8 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer $tokenId',
                       };
-
+                      var encodedUsersList =
+                          models.User.encodeUsersList(attendeesList);
                       var startDateISO = startDate.toIso8601String();
                       var endDateISO = endDate.toIso8601String();
                       var response = await http.post(url,
@@ -484,10 +557,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                             "endDate": endDateController.text,
                             "title": displayNameController.text,
                             "details": displayMessageController.text,
-                            "attendees": [
-                              "BXOz527GzqV5gmfOznA3D8e8gz41",
-                              "BXOz527GzqV5gmfOznA3D8e8gz40"
-                            ],
+                            "attendees": encodedUsersList,
                             "tags": selectedTagsList,
                             "posts": [
                               "https://picsum.photos/200",
@@ -634,7 +704,6 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
         /// Check if items contains query
         return interest.toLowerCase().contains(query.toLowerCase());
       },
-
       onApplyButtonClick: (list) {
         setState(() {
           selectedTagsList = List.from(list!);
@@ -718,5 +787,184 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
     return chips;
   }
 
-  void _openAttendeeDialog() {}
+  List<Widget> buildAttendeeChips() {
+    List<Widget> chips = [];
+    for (int i = 0; i < attendeesNameList.length && i < 3; i++) {
+      // add attendee User object to list called attendeesList, this should be attendeesNameList.
+      chips.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: Image.network(
+              friendsList
+                  .firstWhere((element) => element.name == attendeesNameList[i])
+                  .avatar,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+      if (i == 2) {
+        if (i != selectedTagsList.length - 1) {
+          chips.add(const SizedBox(width: 5));
+          chips.add(Text("+${attendeesNameList.length - 3} more",
+              style: const TextStyle(color: Colors.grey, fontSize: 10)));
+        }
+      }
+    }
+    return chips;
+  }
+
+  Future<void> _openAttendeeDialog() async {
+    await FilterListDialog.display<String>(
+      context,
+      hideSelectedTextCount: true,
+      themeData: FilterListThemeData(
+        context,
+        choiceChipTheme: ChoiceChipThemeData.light(context),
+      ),
+      headlineText: 'Select Friends',
+      height: 500,
+      listData: friendsList.map((e) => e.name).toList(),
+      selectedListData: attendeesNameList,
+      choiceChipLabel: (item) => item!,
+      validateSelectedItem: (list, val) => list!.contains(val),
+      controlButtons: [ControlButtonType.All, ControlButtonType.Reset],
+      onItemSearch: (friend, query) {
+        /// When search query change in search bar then this method will be called
+        /// Check if items contains query
+        return friend.toLowerCase().contains(query.toLowerCase());
+      },
+
+      onApplyButtonClick: (list) {
+        setState(() {
+          attendeesNameList = List.from(list!);
+          attendeesList = friendsList
+              .where((element) => attendeesNameList.contains(element.name))
+              .toList();
+        });
+        Navigator.pop(context);
+      },
+
+      /// uncomment below code to create custom choice chip
+      choiceChipBuilder: (context, item, isSelected) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: isSelected! ? Colours.pink : Colors.grey[300]!,
+            ),
+            color: isSelected ? Colours.pink : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(30),
+                child: Image.network(
+                  friendsList
+                      .firstWhere((element) => element.name == item)
+                      .avatar,
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      friendsList
+                          .firstWhere((element) => element.name == item)
+                          .name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    // if (user.statusMessage != '')
+                    //   Padding(
+                    //     padding: const EdgeInsets.only(top: 4.0),
+                    //     child: Text(
+                    //       user.statusMessage,
+                    //       maxLines: 2,
+                    //       overflow: TextOverflow.ellipsis,
+                    //       style: const TextStyle(
+                    //         color: Colors.grey,
+                    //       ),
+                    //     ),
+                    //   ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // child: Text(
+          //   item,
+          //   style:
+          //       TextStyle(color: isSelected ? Colors.white : Colors.grey[500]),
+          // ),
+        );
+      },
+    );
+  }
+
+  void getFriends() async {
+    final res = FriendsListRepository.fromServer(await source.getFriends());
+    log('getFriends()');
+    log(res.toString());
+    setState(() => friendsList = res);
+  }
+
+  // void getFriends() async {
+  //   try {
+  //     print('print test');
+  //     var tokenId = await FirebaseAuth.instance.currentUser!.getIdToken(true);
+  //     var queryParameters = {
+  //       'email': '${FirebaseAuth.instance.currentUser!.email}'
+  //     };
+  //     var url = Uri.http('10.0.2.2:3000', '/users/find', queryParameters);
+  //     var _headers = {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'Bearer $tokenId',
+  //     };
+
+  //     final response = await http.get(url, headers: _headers);
+  //     log(response.body);
+  //     final jsonResponse = jsonDecode(response.body);
+  //     final userData = jsonResponse[0];
+  //     // log(userData);
+  //     final friends = userData['friends'];
+  //     List<String> uidList = [];
+  //     // List<dynamic> friends = responseJson[0]['friends'];
+  //     if (friends != null && friends.isNotEmpty) {
+  //       for (var friend in friends) {
+  //         uidList.add(friend['uid']);
+  //       }
+  //       for (var uid in uidList) {
+  //         log(uid);
+  //       }
+  //       // log(uidList);
+  //       log('inside friend check');
+  //       print(friends);
+  //     } else {
+  //       log('No friends found');
+  //     }
+  //     // final friendNames = friends.map((friend) => friend.toString()).toList();
+
+  //     log("inside getFriends");
+  //     // log(friendNames);
+  //     log("inbetween");
+  //     // log(friends.toString());
+  //   } catch (e) {
+  //     log(e.toString());
+  //   }
+  // }
 }
