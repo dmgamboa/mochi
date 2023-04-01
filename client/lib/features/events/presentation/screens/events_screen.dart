@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mochi/core/utils/server_url.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mochi/features/events/presentation/screens/event_creation_screen.dart';
@@ -189,7 +190,8 @@ class _EventsScreenState extends State<EventsScreen> {
       var queryParameters = {
         'email': '${FirebaseAuth.instance.currentUser!.email}'
       };
-      var url = Uri.http('10.0.2.2:3000', '/users/find', queryParameters);
+      var url = Uri.parse(
+          '${getServerUrl()}/users/find?email=${FirebaseAuth.instance.currentUser!.email}');
       var _headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $tokenId',
