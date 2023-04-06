@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -10,7 +10,8 @@ import 'package:mochi/core/utils/server_url.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mochi/features/events/presentation/screens/events_screen.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:mochi/core/widgets/media_picker/media_picker.dart';
 
 import '../../../../core/config/colours.dart';
 import '../../../contacts/data/datasources/friends_remote_datasource.dart';
@@ -31,8 +32,9 @@ class EventCreationScreen extends StatefulWidget {
 }
 
 class _EventCreationScreenState extends State<EventCreationScreen> {
-  XFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
+  String? _image64;
+  String? _imageExtension;
 
   final _formKey = GlobalKey<FormState>();
   final displayNameController = TextEditingController();
@@ -508,19 +510,35 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                     if (_formKey.currentState!.validate()) {
                       var tokenId = await FirebaseAuth.instance.currentUser!
                           .getIdToken(true);
-                      var url = Uri.parse('${getServerUrl()}eventCreation');
+
                       var headers = {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer $tokenId',
                       };
+
+                      var saveEventImageUrl =
+                          Uri.parse('${getServerUrl()}events/saveEventImage');
+
+                      var saveEventImageRes = await http.post(saveEventImageUrl,
+                          headers: headers,
+                          body: jsonEncode({
+                            "image64": _image64,
+                            "extension": _imageExtension,
+                          }));
+
+                      var imageURL = saveEventImageRes.body;
+
+                      var eventCreationURL =
+                          Uri.parse('${getServerUrl()}eventCreation');
+
                       var encodedUsersList =
                           models.User.encodeUsersList(attendeesList);
                       var startDateISO = startDate.toIso8601String();
                       var endDateISO = endDate.toIso8601String();
-                      var response = await http.post(url,
+                      var response = await http.post(eventCreationURL,
                           headers: headers,
                           body: jsonEncode({
-                            "image": "https://picsum.photos/200",
+                            "image": imageURL,
                             "location": locationController.text,
                             "startTime": startDateISO,
                             "endTime": endDateISO,
@@ -601,21 +619,30 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton.icon(
-                icon: const Icon(Icons.camera, color: Colours.blueGreen),
-                onPressed: () {
-                  takePhoto(ImageSource.camera);
+              MediaPicker(
+                source: MediaSource.camera,
+                onPicked: (path, extension) {
+                  log('prestring');
+                  log(path.toString());
+                  setState(() {
+                    _image64 = path;
+                    _imageExtension = extension;
+                  });
                 },
-                label: const Text("Camera",
-                    style: TextStyle(color: Colours.blueGreen)),
+                child: const Icon(CupertinoIcons.camera_fill),
               ),
-              TextButton.icon(
-                icon: const Icon(Icons.image, color: Colours.blue),
-                onPressed: () {
-                  takePhoto(ImageSource.gallery);
+              const SizedBox(width: 108.0),
+              MediaPicker(
+                source: MediaSource.gallery,
+                onPicked: (path, extension) {
+                  log('prestring');
+                  log(path.toString());
+                  setState(() {
+                    _image64 = path;
+                    _imageExtension = extension;
+                  });
                 },
-                label: const Text("Gallery",
-                    style: TextStyle(color: Colours.blue)),
+                child: const Icon(CupertinoIcons.photo_fill),
               ),
             ],
           ),
@@ -624,23 +651,17 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
     );
   }
 
-  void takePhoto(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
-    if (pickedFile == null) return;
-    setState(() {
-      _imageFile = pickedFile;
-    });
-  }
-
   Widget imageProfile() {
     return Center(
       child: Stack(children: <Widget>[
         CircleAvatar(
           radius: 60.0,
-          backgroundImage: (_imageFile == null)
+          backgroundImage: (_image64 == null)
               ? const NetworkImage(
-                  "https://cdn.pixabay.com/photo/2014/04/02/11/04/confetti-305394_960_720.png")
-              : FileImage(File(_imageFile!.path)) as ImageProvider<Object>?,
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
+              : MemoryImage(
+                  base64Decode(_image64!),
+                ) as ImageProvider<Object>,
         ),
         Positioned(
           bottom: 12.0,

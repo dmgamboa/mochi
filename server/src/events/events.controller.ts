@@ -1,14 +1,17 @@
-import { Body, Controller, Delete, Post, Get, Put, Param, HttpException, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Get, Put, Param, HttpException, Req, Query } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { Event } from './schemas/event.schema';
 import { UsersController } from '../users/users.controller';
+import { StorageService } from 'src/storage/storage.service';
 
 @Controller('events')
 export class EventsController {
     usersController: UsersController;
-    constructor(private readonly eventsService: EventsService, usersController: UsersController) {
+    storageService: StorageService;
+    constructor(private readonly eventsService: EventsService, usersController: UsersController, storageService: StorageService) {
         this.usersController = usersController;
+        this.storageService = storageService;
     }
 
     //Create
@@ -27,7 +30,7 @@ export class EventsController {
     @Get('/friends')
     async findAllFriendEvents(@Req() request: Request): Promise<any> {
         try {
-            const user = await this.usersController.findOne("lH7pFXEVJtdVxLkAMUNUldotlPx1");
+            const user = await this.usersController.findOne(request['user'].uid);
             console.log(user);
 
             const friends = await Promise.all(
@@ -88,6 +91,17 @@ export class EventsController {
             throw new HttpException(err, 400);
         }     
     }
+
+    @Post('/saveEventImage')
+    async saveEventImage(@Req() request: Request): Promise<any> {
+    try {
+        console.log(request['body']['image64'])
+      const ImageURL = await this.storageService.saveEventImage(request['body']['image64'], request['body']['extension']);
+      return ImageURL;
+    } catch (err) {
+      throw new HttpException(err, 404);
+    }
+  }
 
     //Delete
     @Delete('/delete')
