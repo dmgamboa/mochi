@@ -1,11 +1,15 @@
-import { Body, Controller, Delete, Post, Get, Put, Param, HttpException } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Get, Put, Param, HttpException, Req } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { Event } from './schemas/event.schema';
+import { UsersController } from '../users/users.controller';
 
 @Controller('events')
 export class EventsController {
-    constructor(private readonly eventsService: EventsService) {}
+    usersController: UsersController;
+    constructor(private readonly eventsService: EventsService, usersController: UsersController) {
+        this.usersController = usersController;
+    }
 
     //Create
     @Post('/create')
@@ -19,6 +23,37 @@ export class EventsController {
             throw new HttpException(err, 400);
         }     
     }
+
+    @Get('/friends')
+    async findAllFriendEvents(@Req() request: Request): Promise<any> {
+        try {
+            const user = await this.usersController.findOne("lH7pFXEVJtdVxLkAMUNUldotlPx1");
+            console.log(user);
+
+            const friends = await Promise.all(
+            user.friends.map(async (friend) => {
+            const friendUser = await this.usersController.findOne(friend.uid);
+            return {
+            name: friendUser.name,
+            eventHistroy: friendUser.events
+            }
+        })
+    )
+
+    const friendsEventsSet = new Set(friends.map((friend) => friend.eventHistroy).flat());
+    const friendsEventsArr = Array.from(friendsEventsSet);
+
+    // Include below code if you need an array of event objects, otherwise friendsEventsArr is an array of eventHistory objects
+    // return await Promise.all(
+    // friendsEventsArr.map(async (event) => {
+    //   return await this.eventsService.find({_id: event.event_id})
+    // })
+    // )
+    return friendsEventsArr;
+  } catch (err) {
+    throw new HttpException(err, 500);
+  }
+}
 
     //Read
     @Get('/findAll')
