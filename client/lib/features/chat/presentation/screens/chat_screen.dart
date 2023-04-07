@@ -60,10 +60,12 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    socket.disconnect();
-    super.dispose();
+  void _getMessages() async {
+    final res = await source.getChatById(chat);
+    List<Map<String, dynamic>> messagesJson = res['chat']['messages']
+        .map<Map<String, dynamic>>((e) => e as Map<String, dynamic>)
+        .toList();
+    setState(() => messages = MessageRepository.fromServer(messagesJson));
   }
 
   void _setUpSockets(String id) {
