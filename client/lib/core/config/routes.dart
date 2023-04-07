@@ -12,6 +12,8 @@ import 'package:mochi/features/profile/presentation/screens/profile_screen.dart'
 import 'package:mochi/features/auth/presentation/screens/signup_screen.dart';
 import 'package:mochi/features/auth/presentation/screens/signin_screen.dart';
 import 'package:mochi/features/splash/presentation/screens/splash.dart';
+import 'package:mochi/features/profile/presentation/screens/edit_profile_screen.dart';
+import 'package:mochi/features/profile/presentation/screens/update_password_screen.dart';
 
 class Routes {
   static Map<String, Widget Function(Object?)> routes = {
@@ -28,6 +30,8 @@ class Routes {
     SignupScreen.route: (args) => const SignupScreen(),
     ProfileScreen.route: (args) => const ProfileScreen(),
     ProfileCreationScreen.route: (args) => const ProfileCreationScreen(),
+    EditProfileScreen.route: (args) => const EditProfileScreen(),
+    UpdatePasswordScreen.route: (args) => const UpdatePasswordScreen(),
   };
 
   static Route<dynamic> _errorRoute() {

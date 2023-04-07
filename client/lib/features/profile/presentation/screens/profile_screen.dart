@@ -148,7 +148,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: const TextStyle(fontSize: 24)),
                   Text(_data['display_message'] ?? 'loading'),
                   ElevatedButton(
-                      onPressed: (() => {}), child: const Text("Edit Profile")),
+                      onPressed: (() => {
+                            Navigator.pushNamed(context, '/edit-profile').then((_) {
+                              setState(() {
+                                _getData();
+                              });
+                            })
+                      }), child: const Text("Edit Profile")),
                 ],
               ),
             ),
