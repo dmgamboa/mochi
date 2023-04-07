@@ -46,13 +46,17 @@ export class EventsController {
     const friendsEventsSet = new Set(friends.map((friend) => friend.eventHistroy).flat());
     const friendsEventsArr = Array.from(friendsEventsSet);
 
+    const currentTime = new Date().getTime();
+
+    const filteredFriendsEventsArr = friendsEventsArr.filter((event) => new Date(event.date).getTime() > currentTime);
+
     // Include below code if you need an array of event objects, otherwise friendsEventsArr is an array of eventHistory objects
     // return await Promise.all(
     // friendsEventsArr.map(async (event) => {
     //   return await this.eventsService.find({_id: event.event_id})
     // })
     // )
-    return friendsEventsArr;
+    return filteredFriendsEventsArr;
   } catch (err) {
     throw new HttpException(err, 500);
   }
