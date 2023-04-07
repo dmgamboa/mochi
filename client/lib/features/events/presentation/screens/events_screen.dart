@@ -26,6 +26,7 @@ class EventsScreen extends StatefulWidget {
 class _EventsScreenState extends State<EventsScreen> {
   Map<String, dynamic> _data = {};
   List<Widget> userImageSliders = [];
+  List<Widget> userHistoryImageSliders = [];
   List<Widget> friendImageSliders = [];
 
   @override
@@ -46,7 +47,7 @@ class _EventsScreenState extends State<EventsScreen> {
                   alignment: Alignment.centerLeft,
                   child: Row(
                     children: [
-                      const Text('YOUR EVENTS',
+                      const Text('UPCOMING EVENTS',
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
                       const Spacer(),
@@ -112,18 +113,26 @@ class _EventsScreenState extends State<EventsScreen> {
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('POPULAR EVENTS',
+                  child: Text('PAST EVENTS',
                       style: TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold))),
             ),
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: false,
-                aspectRatio: 2.0,
-                enlargeCenterPage: true,
-              ),
-              items: imageSliders,
-            ),
+            (userHistoryImageSliders.isNotEmpty
+                ? CarouselSlider(
+                    options: CarouselOptions(
+                      autoPlay: false,
+                      aspectRatio: 2.0,
+                      enlargeCenterPage: true,
+                    ),
+                    items: userHistoryImageSliders,
+                  )
+                : const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
+                    child: Text(
+                      "No Past Events..",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )),
           ],
         ),
       ),
@@ -213,7 +222,8 @@ class _EventsScreenState extends State<EventsScreen> {
 
       setState(() {
         _data = firstItem;
-        setUserImageSliders();
+        setUserImageSliders(true);
+        setUserImageSliders(false);
         setFriendImageSliders();
       });
       log(_data.toString());
@@ -222,8 +232,13 @@ class _EventsScreenState extends State<EventsScreen> {
     }
   }
 
-  void setUserImageSliders() {
+  void setUserImageSliders(bool isHistory) {
     userImageSliders = _data['events']
+        .where((item) => isHistory
+            ? DateTime.parse(item['date']).millisecondsSinceEpoch <
+                DateTime.now().millisecondsSinceEpoch
+            : DateTime.parse(item['date']).millisecondsSinceEpoch >
+                DateTime.now().millisecondsSinceEpoch)
         .map<Widget>((item) => GestureDetector(
               onTap: () {
                 // log('clicked on ${item['event']}');
@@ -287,7 +302,9 @@ class _EventsScreenState extends State<EventsScreen> {
             ))
         .toList();
     setState(() {
-      userImageSliders = userImageSliders;
+      isHistory
+          ? userHistoryImageSliders = userImageSliders
+          : userImageSliders = userImageSliders;
     });
   }
 
