@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:mochi/core/utils/server_url.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:http/http.dart' as http;
+import 'package:mochi/features/events/presentation/screens/events_screen.dart';
 import 'dart:convert';
 
 import '../../../../core/config/colours.dart';
@@ -118,6 +119,24 @@ class _EventScreenState extends State<EventScreen> {
             ),
           ],
         ),
+        _data['attendees'] != null
+            ? (_data['attendees'].any((attendee) =>
+                    attendee['id'] == FirebaseAuth.instance.currentUser!.uid))
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                          onPressed: (() => acceptInvite()),
+                          child: const Text("Accept Event")),
+                      ElevatedButton(
+                          onPressed: (() => declineInvite()),
+                          child: const Text("Decline Event")),
+                    ],
+                  )
+                : const SizedBox(
+                    height: 0,
+                  )
+            : const CircularProgressIndicator(),
         const Padding(
           padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
           child: Align(
@@ -331,4 +350,54 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   final socialMedias = ["ALL", "FACEBOOK", "TWITTER", "INSTAGRAM"];
+
+  acceptInvite() async {
+    var tokenId = await FirebaseAuth.instance.currentUser!.getIdToken(true);
+    var body = {
+      'uid': FirebaseAuth.instance.currentUser!.uid,
+    };
+    var id = widget.args.eventId;
+
+    var url = Uri.parse('${getServerUrl()}events/acceptInvite/$id');
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $tokenId',
+    };
+
+    final response = await http.put(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+
+    if (context.mounted) {
+      Navigator.of(context).pushNamed(EventsScreen.route);
+    }
+  }
+
+  declineInvite() async {
+    var tokenId = await FirebaseAuth.instance.currentUser!.getIdToken(true);
+    var body = {
+      'uid': FirebaseAuth.instance.currentUser!.uid,
+    };
+    var id = widget.args.eventId;
+
+    var url = Uri.parse('${getServerUrl()}events/declineInvite/$id');
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $tokenId',
+    };
+
+    final response = await http.put(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    // List<dynamic> jsonResponse = jsonDecode(response.body);
+    // Map<String, dynamic> event = Map<String, dynamic>.from(jsonResponse[0]);
+
+    if (context.mounted) {
+      Navigator.of(context).pushNamed(EventsScreen.route);
+    }
+  }
 }

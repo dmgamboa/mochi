@@ -26,7 +26,9 @@ class EventsScreen extends StatefulWidget {
 class _EventsScreenState extends State<EventsScreen> {
   Map<String, dynamic> _data = {};
   List<Widget> userImageSliders = [];
+  List<Widget> userHistoryImageSliders = [];
   List<Widget> friendImageSliders = [];
+  List<Widget> invitedImageSliders = [];
 
   @override
   void initState() {
@@ -46,7 +48,7 @@ class _EventsScreenState extends State<EventsScreen> {
                   alignment: Alignment.centerLeft,
                   child: Row(
                     children: [
-                      const Text('YOUR EVENTS',
+                      const Text('UPCOMING EVENTS',
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
                       const Spacer(),
@@ -76,6 +78,30 @@ class _EventsScreenState extends State<EventsScreen> {
                     padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
                     child: Text(
                       "No Events Created Yet..",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('INVITED EVENTS',
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold))),
+            ),
+            (invitedImageSliders.isNotEmpty
+                ? CarouselSlider(
+                    options: CarouselOptions(
+                      autoPlay: false,
+                      aspectRatio: 2.0,
+                      enlargeCenterPage: true,
+                    ),
+                    items: invitedImageSliders,
+                  )
+                : const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
+                    child: Text(
+                      "No Invited Events..",
                       style: TextStyle(color: Colors.grey),
                     ),
                   )),
@@ -112,18 +138,26 @@ class _EventsScreenState extends State<EventsScreen> {
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('POPULAR EVENTS',
+                  child: Text('PAST EVENTS',
                       style: TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold))),
             ),
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: false,
-                aspectRatio: 2.0,
-                enlargeCenterPage: true,
-              ),
-              items: imageSliders,
-            ),
+            (userHistoryImageSliders.isNotEmpty
+                ? CarouselSlider(
+                    options: CarouselOptions(
+                      autoPlay: false,
+                      aspectRatio: 2.0,
+                      enlargeCenterPage: true,
+                    ),
+                    items: userHistoryImageSliders,
+                  )
+                : const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
+                    child: Text(
+                      "No Past Events..",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )),
           ],
         ),
       ),
@@ -213,8 +247,10 @@ class _EventsScreenState extends State<EventsScreen> {
 
       setState(() {
         _data = firstItem;
-        setUserImageSliders();
+        setUserImageSliders(true);
+        setUserImageSliders(false);
         setFriendImageSliders();
+        setInvitedImageSliders();
       });
       log(_data.toString());
     } catch (e) {
@@ -222,8 +258,13 @@ class _EventsScreenState extends State<EventsScreen> {
     }
   }
 
-  void setUserImageSliders() {
+  void setUserImageSliders(bool isHistory) {
     userImageSliders = _data['events']
+        .where((item) => isHistory
+            ? DateTime.parse(item['date']).millisecondsSinceEpoch <
+                DateTime.now().millisecondsSinceEpoch
+            : DateTime.parse(item['date']).millisecondsSinceEpoch >
+                DateTime.now().millisecondsSinceEpoch)
         .map<Widget>((item) => GestureDetector(
               onTap: () {
                 // log('clicked on ${item['event']}');
@@ -287,7 +328,9 @@ class _EventsScreenState extends State<EventsScreen> {
             ))
         .toList();
     setState(() {
-      userImageSliders = userImageSliders;
+      isHistory
+          ? userHistoryImageSliders = userImageSliders
+          : userImageSliders = userImageSliders;
     });
   }
 
@@ -368,6 +411,89 @@ class _EventsScreenState extends State<EventsScreen> {
 
       setState(() {
         friendImageSliders = friendImageSliders;
+      });
+    } catch (e) {
+      log('Error: ${e.toString()}');
+    }
+  }
+
+  void setInvitedImageSliders() async {
+    try {
+      var tokenId = await FirebaseAuth.instance.currentUser!.getIdToken(true);
+      var url = Uri.parse('${getServerUrl()}events/invited');
+      var _headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $tokenId',
+      };
+
+      final response = await http.get(url, headers: _headers);
+      final eventsJsonResponse = jsonDecode(response.body);
+
+      invitedImageSliders = await eventsJsonResponse.map<Widget>((item) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushNamed(EventScreen.route,
+                arguments: EventScreenArgs(eventId: item['event_id']));
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+              child: Stack(
+                children: <Widget>[
+                  Image.network(item['image'],
+                      fit: BoxFit.cover, width: 1000.0),
+                  Positioned(
+                    bottom: 0.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color.fromARGB(200, 0, 0, 0),
+                            Color.fromARGB(0, 0, 0, 0)
+                          ],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item['event'],
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            // DateFormat('yyyy-MM-dd').format(item['date']),
+                            DateFormat('MMMM dd, yyyy')
+                                .format(DateTime.parse(item['date'])),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList();
+
+      setState(() {
+        invitedImageSliders = invitedImageSliders;
       });
     } catch (e) {
       log('Error: ${e.toString()}');

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Event, EventDocument } from './schemas/event.schema';
 import { CreateEventDto } from './dto/create-event.dto';
+import { User } from 'src/users/schemas/user.schema';
 
 @Injectable()
 export class EventsService {
@@ -34,6 +35,40 @@ export class EventsService {
             .exec();
         return event;
     }
+
+    async attendeeToDeclinee(eventId: String, attendeeUid: String) {
+        try {
+          const event = await this.eventModel.findByIdAndUpdate(
+            eventId,
+            { 
+                $pull: { attendees: { id: attendeeUid.toString() } } ,
+            },
+            { new: true }
+            );
+          return event;
+        } catch (error) {
+          console.error(error);
+          throw new Error("Failed to remove attendee");
+        }
+      }
+
+    async attendeeToAcceptee(eventId: String, attendeeUid: String, user: User) {
+        try {
+          const acceptee = {id: attendeeUid.toString(), name: user.name, profile_picture: user.profile_picture, display_message: user.display_message }
+          const event = await this.eventModel.findByIdAndUpdate(
+            eventId,
+            { 
+                $pull: { attendees: { id: attendeeUid.toString() } } ,
+                $addToSet: { acceptees : acceptee } 
+            },
+            { new: true }
+            );
+          return event;
+        } catch (error) {
+          console.error(error);
+          throw new Error("Failed to remove attendee");
+        }
+      }
 
     //Delete
     async delete(query: Object): Promise<Event> {

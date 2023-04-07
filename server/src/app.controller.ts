@@ -102,6 +102,7 @@ export class AppController {
         details: request['body']?.details,
         image: request['body']?.image,
         attendees: request['body']?.attendees,
+        acceptees: request['body']?.acceptees,
         tags: request['body']?.tags,
         posts: request['body']?.posts,
       };

@@ -547,6 +547,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                             "title": displayNameController.text,
                             "details": displayMessageController.text,
                             "attendees": encodedUsersList,
+                            "acceptees": [],
                             "tags": selectedTagsList,
                             "posts": [
                               "https://picsum.photos/200",

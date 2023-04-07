@@ -52,6 +52,11 @@ export class Event {
     attendees: Types.Array<Attendee>;
 
     @Prop({
+        type: [AttendeeSchema],
+    })
+    acceptees: Types.Array<Attendee>;
+
+    @Prop({
         required: true,
         type: [String],
         enum: Tag,
