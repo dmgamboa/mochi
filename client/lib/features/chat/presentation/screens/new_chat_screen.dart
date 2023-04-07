@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:mochi/core/models/models.dart';
 import 'package:mochi/features/chat/data/datasources/chat_remote_datasource.dart';
+import 'package:mochi/features/chat/data/repository/repository.dart';
 import 'package:mochi/features/contacts/data/datasources/datasources.dart';
 import 'package:mochi/features/contacts/data/respository/repository.dart';
 import 'package:mochi/features/contacts/presentation/tabs/friends_list.dart';
+
+import 'chat_screen.dart';
 
 class NewChatScreen extends StatefulWidget {
   static const String route = '/new_chat';
@@ -27,7 +30,16 @@ class _NewChatScreenState extends State<NewChatScreen> {
     super.initState();
   }
 
-  void onTap(User friend) {
+  void onTap(User friend) async {
+    try {
+      final res = await source.getChat([friend]);
+      final chat = ChatRepository.fromJson(res);
+      Navigator.pushNamed(context, ChatScreen.route,
+          arguments: ChatScreenArgs(chat: chat));
+    } catch (e) {
+      Navigator.pushNamed(context, ChatScreen.route,
+          arguments: ChatScreenArgs(participants: [friend]));
+    }
     // source.getMessages(chat)
   }
 

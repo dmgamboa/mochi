@@ -25,7 +25,7 @@ class ChatRepository {
     return {
       'id': chat.id,
       'participants': jsonEncode(chat.participants),
-      'last_message': jsonEncode(MessageRepository.toJSON(chat.lastMessage)),
+      'last_message': jsonEncode(MessageRepository.toJSON(chat.lastMessage!)),
       // 'streak': chat.streak.toString(),
     };
   }

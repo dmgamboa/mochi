@@ -33,9 +33,7 @@ class ChatRemoteDataSource {
   }
 
   Future<Map<String, dynamic>> getChat(
-    Message message,
-    List<mochi_models.User> recipients,
-  ) async {
+      List<mochi_models.User> recipients) async {
     await _getAccessToken();
     final response = await http.post(
         Uri.parse(
@@ -50,13 +48,13 @@ class ChatRemoteDataSource {
           ),
         });
     if (response.statusCode == 201 || response.statusCode == 200) {
-      final dynamic data = jsonDecode(response.body);
-      return data.cast<Map<String, dynamic>>();
+      print(response.body);
+      return jsonDecode(response.body);
     }
     throw Exception('Failed to create chat');
   }
 
-  Future<List<Map<String, dynamic>>> getChatById(Chat chat) async {
+  Future<Map<String, dynamic>> getChatById(Chat chat) async {
     await _getAccessToken();
     final response = await http.get(
       Uri.parse('${baseUrl}chats/${chat.id}'),
@@ -64,8 +62,7 @@ class ChatRemoteDataSource {
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.cast<Map<String, dynamic>>();
+      return jsonDecode(response.body);
     }
     throw Exception('Failed to fetch messages for chat');
   }

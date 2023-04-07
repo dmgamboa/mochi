@@ -83,13 +83,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Text(chat.lastMessage.createdAt.toString().substring(0, 10)),
+                  Text(chat.lastMessage!.createdAt.toString().substring(0, 10)),
                 ],
               ),
-              subtitle: chat.lastMessage.type != MessageType.text
+              subtitle: chat.lastMessage!.type != MessageType.text
                   ? Text('${chat.participants[0].name} sent an attachment.')
                   : Text(
-                      chat.lastMessage.content,
+                      chat.lastMessage!.content,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

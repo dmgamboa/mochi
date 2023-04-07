@@ -32,15 +32,17 @@ export class ChatController {
   @Post('/new')
   async create(@Req() request: Request): Promise<any> {
     try {
-      const participants = request['body'].participants;
+      const message = JSON.parse(request['body']?.message)
+      const participants = JSON.parse(request['body'].participants);
       participants.push(request['user'].uid);
+      participants.sort();
 
       const newChat: BaseDoc<Chat> = {
         participants: participants,
         messages: [{
           user_id: request['user'].uid,
-          content: request['body'].message.content,
-          type: request['body'].message.type,
+          content: message.content,
+          type: message.type,
           date: new Date(Date.now())
         }],
       }
@@ -75,8 +77,9 @@ export class ChatController {
   @Post('/search')
   async checkChatExists(@Req() request: Request): Promise<any> {
     try {
-      const participants = request['body'].participants;
+      const participants = JSON.parse(request['body'].participants);
       participants.push(request['user'].uid);
+      participants.sort();
 
       const chat = await this.chatService.checkChatExists(participants);
       
@@ -95,9 +98,12 @@ export class ChatController {
           })
         );
 
+        const last_message = chat.messages[chat.messages.length - 1];
+
         return {
           chat: chat,
           participants: participants,
+          last_message: last_message,
         }
       }
 
@@ -179,11 +185,12 @@ export class ChatController {
   @Put('/send')
   async send(@Req() request: Request): Promise<Chat> {
     try {
+      const message = JSON.parse(request['body']?.message)
       const chat = await this.chatService.send(
         request['user']?.uid,
         request['body']?.chatId,
-        request['body']?.message.content,
-        request['body']?.message.type, 
+        message.content,
+        message.type
       );
 
       if (!chat) {

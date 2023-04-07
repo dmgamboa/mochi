@@ -9,8 +9,12 @@ class MessageRepository {
     return messages.map((message) => fromJson(message)).toList();
   }
 
+  static List<Message> fromServer(List<Map<String, dynamic>> messages) {
+    return messages.map((message) => fromJson(message)).toList();
+  }
+
   static Message fromJson(Map<String, dynamic> json) {
-    if (json['extension'] != '') {
+    if (json['type'] != 'text') {
       return MediaMessage(
         senderId: json['user_id'],
         content: json['content'] ?? json['message'] ?? '',

@@ -5,15 +5,15 @@ import './message.dart';
 class Chat {
   final String id;
   final List<User> participants;
-  final Message lastMessage;
+  final Message? lastMessage;
   final int streak;
   String title;
 
   Chat({
     required this.id,
     required this.participants,
-    required this.lastMessage,
-    required this.streak,
+    this.lastMessage,
+    this.streak = 0,
     this.title = '',
   });
 

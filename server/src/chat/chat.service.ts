@@ -116,7 +116,7 @@ export class ChatService {
     
     const chat = await this.chatModel.findOneAndUpdate(
       {chat_id: chatId},
-      {$push: {participants: userId}},
+      {$push: {participants: {$each: [userId], $sort: 1}}},
       {new: true}
     ).exec().catch(err => {
       return err.message;
