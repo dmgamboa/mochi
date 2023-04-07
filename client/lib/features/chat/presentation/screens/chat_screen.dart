@@ -66,22 +66,22 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  void _setUpSockets() {
+  void _setUpSockets(String id) {
     socket = socket_io.io(getServerUrl(), <String, dynamic>{
       'transports': ['websocket'],
     });
     socket.connect();
     socket.on('connection', (u) {
-      socket.emit('room', chat.id);
+      socket.emit('room', id);
     });
     socket.on(
       'message',
-      (res) => setState(() {
+      (res) {
         final data = jsonDecode(res) as Map<String, dynamic>;
         if (data['user_id'] != userId) {
-          messages.add(MessageRepository.fromJson(data));
+          setState(() => messages.add(MessageRepository.fromJson(data)));
         }
-      }),
+      },
     );
   }
 
@@ -103,7 +103,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final res = await source.newChat(message, chat.participants);
     final createdChat = ChatRepository.fromJson(res['chat']);
     setState(() => chat = createdChat);
-    _setUpSockets();
+    _setUpSockets(createdChat.id);
   }
 
   @override
