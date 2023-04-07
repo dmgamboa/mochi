@@ -5,10 +5,14 @@ import { User } from './schemas/user.schema';
 import { UserSearchDto } from './dto/userSearch.dto';
 import { Request } from 'express';
 import { FriendStatus } from 'src/enums/enums.friendStatus';
+import { StorageService } from 'src/storage/storage.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  storageService: StorageService;
+  constructor(private readonly usersService: UsersService, storageService: StorageService) {
+    this.storageService = storageService;
+   }
 
   //Create
   @Post()
@@ -210,6 +214,16 @@ export class UsersController {
       } else {
         return user;
       }
+    } catch (err) {
+      throw new HttpException(err, 404);
+    }
+  }
+
+  @Post('/saveProfileImage')
+  async saveProfileImage(@Req() request: Request): Promise<any> {
+    try {
+      const ImageURL = await this.storageService.saveProfileImage(request['body']?.image64, request['body']?.extension);
+      return ImageURL;
     } catch (err) {
       throw new HttpException(err, 404);
     }

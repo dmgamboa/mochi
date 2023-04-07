@@ -21,4 +21,26 @@ export class StorageService {
 
     return `https://storage.googleapis.com/${this.bucket.name}/${filePath}`;
   }
+
+  async saveProfileImage(base64File: string, extension: string): Promise<string> {
+    const buffer = Buffer.from(base64File, 'base64');
+    const filePath = `profileImages/${Date.now().toString()}.${extension}`;
+    const file = this.bucket.file(filePath);
+
+    await file.save(buffer);
+    await file.makePublic();
+
+    return `https://storage.googleapis.com/${this.bucket.name}/${filePath}`;
+  }
+
+  async saveEventImage(base64File: string, extension: string): Promise<string> {
+    const buffer = Buffer.from(base64File, 'base64');
+    const filePath = `eventImages/${Date.now().toString()}.${extension}`;
+    const file = this.bucket.file(filePath);
+
+    await file.save(buffer);
+    await file.makePublic();
+
+    return `https://storage.googleapis.com/${this.bucket.name}/${filePath}`;
+  }
 }

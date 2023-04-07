@@ -1,13 +1,18 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mochi/core/utils/server_url.dart';
 import 'package:mochi/core/widgets/layout/layout.dart';
 import 'package:filter_list/filter_list.dart';
+import 'package:flutter/cupertino.dart';
+
 import 'package:image_picker/image_picker.dart';
+import 'package:mochi/core/widgets/media_picker/media_picker.dart';
+
 import 'package:mochi/features/profile/presentation/screens/profile_screen.dart';
 
 import '../../../../core/config/colours.dart';
@@ -25,13 +30,15 @@ class ProfileCreationScreen extends StatefulWidget {
 }
 
 class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
-  XFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
 
   final _formKey = GlobalKey<FormState>();
   final displayNameController = TextEditingController();
   final displayMessageController = TextEditingController();
   List<String> selectedInterestsList = <String>[];
+
+  String? _image64;
+  String? _imageExtension;
 
   @override
   void dispose() {
@@ -195,25 +202,41 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
                     if (_formKey.currentState!.validate()) {
                       var tokenId = await FirebaseAuth.instance.currentUser!
                           .getIdToken(true);
-                      var url =
-                          Uri.parse('http://10.0.2.2:3000/profileCreation');
+
                       var _headers = {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer $tokenId',
                       };
-                      var response = await http.post(url,
-                          headers: _headers,
-                          body: jsonEncode({
-                            "profileImage": "https://picsum.photos/200",
-                            "displayName": displayNameController.text,
-                            "displayMessage": displayMessageController.text,
-                            "interests": selectedInterestsList,
-                          }));
+
+                      var saveProfileImageUrl =
+                          Uri.parse('${getServerUrl()}users/saveProfileImage');
+
+                      var saveProfileImageRes =
+                          await http.post(saveProfileImageUrl,
+                              headers: _headers,
+                              body: jsonEncode({
+                                "image64": _image64,
+                                "extension": _imageExtension,
+                              }));
+
+                      var imageURL = saveProfileImageRes.body;
+
+                      var profileCreationUrl =
+                          Uri.parse('${getServerUrl()}profileCreation');
+                      var profileCreationRes =
+                          await http.post(profileCreationUrl,
+                              headers: _headers,
+                              body: jsonEncode({
+                                "profileImage": imageURL,
+                                "displayName": displayNameController.text,
+                                "displayMessage": displayMessageController.text,
+                                "interests": selectedInterestsList,
+                              }));
                       ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-                        content: Text(response.body),
+                        content: Text(profileCreationRes.body),
                         backgroundColor: Colors.green,
                       ));
-                      await Future.delayed(const Duration(seconds: 5));
+                      await Future.delayed(const Duration(seconds: 3));
                       if (context.mounted) {
                         Navigator.of(context).pushNamed(ProfileScreen.route);
                       }
@@ -269,21 +292,30 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton.icon(
-                icon: const Icon(Icons.camera, color: Colours.blueGreen),
-                onPressed: () {
-                  takePhoto(ImageSource.camera);
+              MediaPicker(
+                source: MediaSource.camera,
+                onPicked: (path, extension) {
+                  log('prestring');
+                  log(path.toString());
+                  setState(() {
+                    _image64 = path;
+                    _imageExtension = extension;
+                  });
                 },
-                label: const Text("Camera",
-                    style: TextStyle(color: Colours.blueGreen)),
+                child: const Icon(CupertinoIcons.camera_fill),
               ),
-              TextButton.icon(
-                icon: const Icon(Icons.image, color: Colours.blue),
-                onPressed: () {
-                  takePhoto(ImageSource.gallery);
+              const SizedBox(width: 108.0),
+              MediaPicker(
+                source: MediaSource.gallery,
+                onPicked: (path, extension) {
+                  log('prestring');
+                  log(path.toString());
+                  setState(() {
+                    _image64 = path;
+                    _imageExtension = extension;
+                  });
                 },
-                label: const Text("Gallery",
-                    style: TextStyle(color: Colours.blue)),
+                child: const Icon(CupertinoIcons.photo_fill),
               ),
             ],
           ),
@@ -292,23 +324,17 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
     );
   }
 
-  void takePhoto(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
-    if (pickedFile == null) return;
-    setState(() {
-      _imageFile = pickedFile;
-    });
-  }
-
   Widget imageProfile() {
     return Center(
       child: Stack(children: <Widget>[
         CircleAvatar(
           radius: 60.0,
-          backgroundImage: (_imageFile == null)
+          backgroundImage: (_image64 == null)
               ? const NetworkImage(
                   "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
-              : FileImage(File(_imageFile!.path)) as ImageProvider<Object>?,
+              : MemoryImage(
+                  base64Decode(_image64!),
+                ) as ImageProvider<Object>,
         ),
         Positioned(
           bottom: 12.0,
