@@ -12,6 +12,7 @@ export class CreateEventDto {
   readonly details: string;
   readonly image: string;
   readonly attendees: Types.Array<Attendee>;
+  readonly acceptees: Types.Array<Attendee>;
   readonly tags: string[];
   readonly posts: string[];
 }
