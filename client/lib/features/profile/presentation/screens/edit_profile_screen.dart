@@ -13,6 +13,9 @@ import 'dart:io';
 import 'package:mochi/core/enums/interestsList.dart' as interests_list;
 import 'package:mochi/core/utils/server_url.dart';
 
+import 'package:flutter/cupertino.dart';
+import 'package:mochi/core/widgets/media_picker/media_picker.dart';
+
 class EditProfileScreen extends StatefulWidget {
   static const String route = '/edit-profile';
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -25,6 +28,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Map<String, dynamic> _data = {};
   XFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
+  String? _image64;
+  String? _imageExtension;
 
   final _formKey = GlobalKey<FormState>();
   final displayNameController = TextEditingController();
@@ -61,19 +66,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _updateData() async {
     try {
       var tokenId = await FirebaseAuth.instance.currentUser!.getIdToken(true);
+
       String id = _data['_id'];
-      var url = Uri.parse(
-          '${getServerUrl()}users/update/$id');
+
       var headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $tokenId',
       };
+
+      var saveProfileImageUrl =
+          Uri.parse('${getServerUrl()}users/saveProfileImage');
+
+      var saveProfileImageRes = await http.post(saveProfileImageUrl,
+          headers: headers,
+          body: jsonEncode({
+            "image64": _image64,
+            "extension": _imageExtension,
+          }));
+
+      var imageURL = saveProfileImageRes.body;
+
+      var url = Uri.parse('${getServerUrl()}users/update/$id');
 
       final response = await http.put(url,
           headers: headers,
           body: jsonEncode({
             'name': displayNameController.text,
             'display_message': displayMessageController.text,
+            'profile_picture': imageURL,
             'tags': selectedInterestsList,
             'settings': {
               'friend_cold_notifications': [coldStreakNotifications],
@@ -130,9 +150,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         (_data['tags'] as List).map((item) => item as String).toList();
     name = _data['name'] ?? '';
     displayMessage = _data['display_message'] ?? '';
-    coldStreakNotifications = _data['settings']['friend_cold_notifications'][0] ?? "daily";
-    hotStreakNotifications = _data['settings']['friend_hot_notifications'][0] ?? "daily";
-    eventsNotifications = _data['settings']['event_notifications'][0] ?? "daily";
+    coldStreakNotifications =
+        _data['settings']['friend_cold_notifications'][0] ?? "daily";
+    hotStreakNotifications =
+        _data['settings']['friend_hot_notifications'][0] ?? "daily";
+    eventsNotifications =
+        _data['settings']['event_notifications'][0] ?? "daily";
   }
 
   signOut(BuildContext context) async {
@@ -530,21 +553,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton.icon(
-                icon: const Icon(Icons.camera, color: Colours.blueGreen),
-                onPressed: () {
-                  takePhoto(ImageSource.camera);
+              MediaPicker(
+                source: MediaSource.camera,
+                onPicked: (path, extension) {
+                  log('prestring');
+                  log(path.toString());
+                  setState(() {
+                    _image64 = path;
+                    _imageExtension = extension;
+                  });
                 },
-                label: const Text("Camera",
-                    style: TextStyle(color: Colours.blueGreen)),
+                child: const Icon(CupertinoIcons.camera_fill),
               ),
-              TextButton.icon(
-                icon: const Icon(Icons.image, color: Colours.blue),
-                onPressed: () {
-                  takePhoto(ImageSource.gallery);
+              const SizedBox(width: 108.0),
+              MediaPicker(
+                source: MediaSource.gallery,
+                onPicked: (path, extension) {
+                  log('prestring');
+                  log(path.toString());
+                  setState(() {
+                    _image64 = path;
+                    _imageExtension = extension;
+                  });
                 },
-                label: const Text("Gallery",
-                    style: TextStyle(color: Colours.blue)),
+                child: const Icon(CupertinoIcons.photo_fill),
               ),
             ],
           ),
@@ -553,23 +585,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  void takePhoto(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
-    if (pickedFile == null) return;
-    setState(() {
-      _imageFile = pickedFile;
-    });
-  }
-
   Widget imageProfile() {
     return Center(
       child: Stack(children: <Widget>[
         CircleAvatar(
           radius: 60.0,
-          backgroundImage: (_imageFile == null)
+          backgroundImage: (_image64 == null)
               ? const NetworkImage(
                   "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
-              : FileImage(File(_imageFile!.path)) as ImageProvider<Object>?,
+              : MemoryImage(
+                  base64Decode(_image64!),
+                ) as ImageProvider<Object>,
         ),
         Positioned(
           bottom: 12.0,
