@@ -23,6 +23,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic> _data = {};
   List<Widget> userImageSliders = [];
+  List<Widget> userHistoryImageSliders = [];
 
   @override
   void initState() {
@@ -51,7 +52,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       setState(() {
         _data = firstItem;
-        setUserImageSliders();
+        setUserImageSliders(true);
+        setUserImageSliders(false);
       });
       log(_data.toString());
     } catch (e) {
@@ -59,11 +61,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void setUserImageSliders() {
-    log('inside set user image sliders');
-    print('inside set user image sliders');
-    print(_data['events']);
+  void setUserImageSliders(bool isHistory) {
     userImageSliders = _data['events']
+        .where((item) => isHistory
+            ? DateTime.parse(item['date']).millisecondsSinceEpoch <
+                DateTime.now().millisecondsSinceEpoch
+            : DateTime.parse(item['date']).millisecondsSinceEpoch >
+                DateTime.now().millisecondsSinceEpoch)
         .map<Widget>((item) => GestureDetector(
               onTap: () {
                 // log('clicked on ${item['event']}');
@@ -127,7 +131,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ))
         .toList();
     setState(() {
-      userImageSliders = userImageSliders;
+      isHistory
+          ? userHistoryImageSliders = userImageSliders
+          : userImageSliders = userImageSliders;
     });
   }
 
@@ -149,12 +155,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(_data['display_message'] ?? 'loading'),
                   ElevatedButton(
                       onPressed: (() => {
-                            Navigator.pushNamed(context, '/edit-profile').then((_) {
+                            Navigator.pushNamed(context, '/edit-profile')
+                                .then((_) {
                               setState(() {
                                 _getData();
                               });
                             })
-                      }), child: const Text("Edit Profile")),
+                          }),
+                      child: const Text("Edit Profile")),
                 ],
               ),
             ),
@@ -187,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: EdgeInsets.fromLTRB(30, 10, 0, 0),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text("EVENTS", style: TextStyle(fontSize: 18))),
+              child: Text("UPCOMING EVENTS", style: TextStyle(fontSize: 18))),
         ),
         (userImageSliders.isNotEmpty
             ? CarouselSlider(
@@ -206,22 +214,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               )),
         const Padding(
-          padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
+          padding: EdgeInsets.fromLTRB(30, 10, 0, 0),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text("SOCIAL MEDIA", style: TextStyle(fontSize: 18))),
+              child: Text("PAST EVENTS", style: TextStyle(fontSize: 18))),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          child: Wrap(
-            children: buildSMChips(),
-          ),
-        ),
-        Container(
-          height: 100,
-          color: Colours.blueGreen,
-          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        ),
+        (userHistoryImageSliders.isNotEmpty
+            ? CarouselSlider(
+                options: CarouselOptions(
+                  autoPlay: false,
+                  aspectRatio: 2.0,
+                  enlargeCenterPage: true,
+                ),
+                items: userHistoryImageSliders,
+              )
+            : const Padding(
+                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
+                child: Text(
+                  "No Events Created Yet..",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              )),
+        // const Padding(
+        //   padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
+        //   child: Align(
+        //       alignment: Alignment.centerLeft,
+        //       child: Text("SOCIAL MEDIA", style: TextStyle(fontSize: 18))),
+        // ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        //   child: Wrap(
+        //     children: buildSMChips(),
+        //   ),
+        // ),
+        // Container(
+        //   height: 100,
+        //   color: Colours.blueGreen,
+        //   margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        // ),
       ],
     )));
   }
@@ -268,26 +298,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return chips;
   }
 
-  List<Widget> buildSMChips() {
-    List<Widget> chips = [];
-    for (int i = 0; i < socialMedias.length; i++) {
-      chips.add(
-        Padding(
-          padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
-          child: Chip(
-            labelPadding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-            labelStyle: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-            ),
-            label: Text(socialMedias[i]),
-            backgroundColor: Colors.grey,
-          ),
-        ),
-      );
-    }
-    return chips;
-  }
+  // List<Widget> buildSMChips() {
+  //   List<Widget> chips = [];
+  //   for (int i = 0; i < socialMedias.length; i++) {
+  //     chips.add(
+  //       Padding(
+  //         padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
+  //         child: Chip(
+  //           labelPadding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+  //           labelStyle: const TextStyle(
+  //             color: Colors.white,
+  //             fontSize: 12,
+  //           ),
+  //           label: Text(socialMedias[i]),
+  //           backgroundColor: Colors.grey,
+  //         ),
+  //       ),
+  //     );
+  //   }
+  //   return chips;
+  // }
 
-  final socialMedias = ["ALL", "FACEBOOK", "TWITTER", "INSTAGRAM"];
+  // final socialMedias = ["ALL", "FACEBOOK", "TWITTER", "INSTAGRAM"];
 }
