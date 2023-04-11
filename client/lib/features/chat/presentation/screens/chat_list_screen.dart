@@ -1,25 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:mochi/core/widgets/layout/layout.dart';
-import 'package:mochi/features/chat/data/datasources/mock_data.dart';
 import 'package:mochi/features/chat/data/repository/chat_repository.dart';
+import '../../data/datasources/datasources.dart';
 import '../../domain/models/models.dart';
 import './chat_screen.dart';
+import './new_chat_screen.dart';
 
-class ChatListScreen extends StatelessWidget {
-  static const String route = '/chat';
-  // final List<Chat> chats;
+class ChatListScreen extends StatefulWidget {
+  static const String route = '/chats';
 
-  ChatListScreen({
-    // required this.chats,
+  const ChatListScreen({
     super.key,
   });
 
-  final List<Chat> chats = ChatRepository.fromMockData(ChatMockData.chats);
+  @override
+  State<ChatListScreen> createState() => _ChatListScreenState();
+}
+
+class _ChatListScreenState extends State<ChatListScreen> {
+  List<Chat> chats = [];
+  ChatRemoteDataSource source = ChatRemoteDataSource();
+  String? userId = '';
+
+  @override
+  void initState() {
+    getChats();
+    userId = firebase_auth.FirebaseAuth.instance.currentUser?.uid ?? '';
+    super.initState();
+  }
+
+  void getChats() async {
+    final res = await source.getChats();
+    setState(() => chats = ChatRepository.fromServer(res));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Layout(
-      pageTitle: 'Chats',
+      appBar: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text('Chats'),
+          const Spacer(),
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, NewChatScreen.route),
+            child: const Icon(Icons.add),
+          ),
+        ],
+      ),
       body: ListView.builder(
         itemCount: chats.length,
         itemBuilder: (context, index) {
@@ -27,7 +56,8 @@ class ChatListScreen extends StatelessWidget {
 
           return GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, ChatScreen.route);
+              Navigator.pushNamed(context, ChatScreen.route,
+                  arguments: ChatScreenArgs(chat: chat));
             },
             child: ListTile(
               leading: CircleAvatar(
@@ -48,21 +78,17 @@ class ChatListScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      chat.participants.map((user) => user.name).join(', '),
+                      chat.getTitle(userId!),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Text(chat.lastMessage.createdAt.toString().substring(0, 10)),
+                  Text(chat.lastMessage!.createdAt.toString().substring(0, 10)),
                 ],
               ),
-              subtitle: chat.lastMessage is MediaMessage
-                  ? Text('${chat.participants[0].name} sent an attachment.')
-                  : Text(
-                      chat.lastMessage.content,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+              subtitle: Text(
+                chat.getSubtitle(userId!),
+              ),
             ),
           );
         },

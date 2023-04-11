@@ -29,32 +29,31 @@ export class ChatController {
   }
 
   //Create
-  @Post('/newChat')
+  @Post('/new')
   async create(@Req() request: Request): Promise<any> {
     try {
-      const chat = await this.chatService.checkChatExists(request['body'].participants);
-      
-      if (chat) {
-        return chat;
-      }
+      const message = JSON.parse(request['body']?.message)
+      const participants = JSON.parse(request['body'].participants);
+      participants.push(request['user'].uid);
+      participants.sort();
 
       const newChat: BaseDoc<Chat> = {
-        participants: request['body'].participants,
+        participants: participants,
         messages: [{
           user_id: request['user'].uid,
-          message: request['body'].message,
-          type: request['body'].type,
+          content: message.content,
+          type: message.type,
           date: new Date(Date.now())
         }],
       }
 
-      const createdChat = await this.chatService.create(newChat as CreateChatDto);
+      const chat = await this.chatService.create(newChat as CreateChatDto);
 
-      if (!createdChat) {
-        throw new HttpException(createdChat, 400);
+      if (!chat) {
+        throw new HttpException(chat, 400);
       } else {
         const participants = await Promise.all(
-          createdChat.participants.map(async (participant) => {
+          chat.participants.map(async (participant) => {
             const user = await this.usersController.findOne(participant);
             return {
               uid: participant,
@@ -65,11 +64,52 @@ export class ChatController {
           })
         );
 
+        const last_message = chat.messages[chat.messages.length - 1];
+
         return {
-          chat: createdChat,
+          chat: chat,
           participants: participants,
+          last_message: last_message,
         }
       }
+    } catch (err) {
+      throw new HttpException(err, 500);
+    }
+  }
+
+  @Post('/search')
+  async checkChatExists(@Req() request: Request): Promise<any> {
+    try {
+      const participants = JSON.parse(request['body'].participants);
+      participants.push(request['user'].uid);
+      participants.sort();
+
+      const chat = await this.chatService.checkChatExists(participants);
+      
+      if (!chat) {
+        return null;
+      } else {
+        const participants = await Promise.all(
+          chat.participants.map(async (participant) => {
+            const user = await this.usersController.findOne(participant);
+            return {
+              uid: participant,
+              name: user.name,
+              profile_picture: user.profile_picture,
+              role: request['user'].uid == participant ? 'sender' : 'receiver',
+            };
+          })
+        );
+
+        const last_message = chat.messages[chat.messages.length - 1];
+
+        return {
+          chat: chat,
+          participants: participants,
+          last_message: last_message,
+        }
+      }
+
     } catch (err) {
       throw new HttpException(err, 500);
     }
@@ -148,11 +188,12 @@ export class ChatController {
   @Put('/send')
   async send(@Req() request: Request): Promise<Chat> {
     try {
+      const message = JSON.parse(request['body']?.message)
       const chat = await this.chatService.send(
         request['user']?.uid,
         request['body']?.chatId,
-        request['body']?.message,
-        request['body']?.type, 
+        message.content,
+        message.type
       );
 
       if (!chat) {

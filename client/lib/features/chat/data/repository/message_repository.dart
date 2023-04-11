@@ -9,41 +9,41 @@ class MessageRepository {
     return messages.map((message) => fromJson(message)).toList();
   }
 
+  static List<Message> fromServer(List<Map<String, dynamic>> messages) {
+    return messages.map((message) => fromJson(message)).toList();
+  }
+
   static Message fromJson(Map<String, dynamic> json) {
-    if (json['extension'] != '') {
+    if (json['type'] != 'text') {
       return MediaMessage(
-        id: json['id'],
-        sender: User.fromJson(json['sender']),
-        content: json['content'],
-        extension: json['extension'],
-        createdAt: DateTime.parse(json['createdAt']),
+        senderId: json['user_id'],
+        content: json['content'] ?? json['message'] ?? '',
+        extension: json['extension'] ?? '',
+        createdAt: DateTime.parse(json['date']),
+        type: MessageType.values.firstWhere(
+          (e) => e.toString() == 'MessageType.${json['type']}',
+        ),
       );
     } else {
       return Message(
-        id: json['id'],
-        sender: User.fromJson(json['sender']),
-        content: json['content'],
-        createdAt: DateTime.parse(json['createdAt']),
+        senderId: json['user_id'],
+        content: json['content'] ?? json['message'] ?? '',
+        createdAt: DateTime.parse(json['date']),
+        type: MessageType.values.firstWhere(
+          (e) => e.toString() == 'MessageType.${json['type']}',
+        ),
       );
     }
   }
 
   static Map<String, String> toJSON(Message message) {
-    if (message is MediaMessage) {
-      return {
-        'sender': jsonEncode(message.sender.toJSON()),
-        'content': message.content,
-        'extension': message.extension,
-        'read': message.read.toString(),
-        'createdAt': message.createdAt.toString(),
-      };
-    } else {
-      return {
-        'sender': jsonEncode(message.sender.toJSON()),
-        'content': message.content,
-        'read': message.read.toString(),
-        'createdAt': message.createdAt.toString(),
-      };
-    }
+    return {
+      'user_id': message.senderId,
+      'content': message.content,
+      'extension': message is MediaMessage ? message.extension : '',
+      'type': message.type.toString().split('.').last,
+      'read': message.read.toString(),
+      'date': message.createdAt.toString(),
+    };
   }
 }

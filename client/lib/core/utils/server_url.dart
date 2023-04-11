@@ -1,9 +1,14 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/foundation.dart';
 
 String getServerUrl() {
   switch (dotenv.env['ENV']) {
     case 'local':
-      return dotenv.env['LOCAL_SERVER']!;
+      if (kIsWeb) {
+        return dotenv.env['LOCAL_SERVER']!.replaceAll('10.0.2.2:', 'localhost');
+      } else {
+        return dotenv.env['LOCAL_SERVER']!;
+      }
     case 'dev':
       return dotenv.env['DEV_SERVER']!;
     case 'prod':

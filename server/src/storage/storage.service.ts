@@ -11,9 +11,9 @@ export class StorageService {
     this.bucket = firebase.storage().bucket();
   }
 
-  async saveImage(base64File: string, extension: string): Promise<string> {
+  async saveImage(base64File: string, extension: string, chatId: string): Promise<string> {
     const buffer = Buffer.from(base64File, 'base64');
-    const filePath = `images/${Date.now().toString()}.${extension}`;
+    const filePath = `${chatId}/${Date.now().toString()}.${extension}`;
     const file = this.bucket.file(filePath);
 
     await file.save(buffer);

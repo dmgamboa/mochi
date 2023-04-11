@@ -4,9 +4,11 @@ import '../widgets/widgets.dart';
 
 class FriendsList extends StatelessWidget {
   final List<User> friends;
+  final Function(User)? onTap;
 
   const FriendsList({
     required this.friends,
+    this.onTap,
     Key? key,
   }) : super(key: key);
 
@@ -15,7 +17,10 @@ class FriendsList extends StatelessWidget {
     return ListView.builder(
       itemCount: friends.length,
       itemBuilder: (BuildContext context, int index) {
-        return FriendsListElement(user: friends[index]);
+        return FriendsListElement(
+          user: friends[index],
+          onTap: onTap,
+        );
       },
     );
   }

@@ -12,7 +12,7 @@ class User {
   });
 
   User.fromJson(Map<String, dynamic> json)
-      : id = json['uid'] ?? json['id'],
+      : id = json['uid'] ?? json['user_id'] ?? json['id'],
         name = json['name'],
         avatar = json['profile_picture'] ?? json['avatar'] ?? '',
         statusMessage = json['display_message'] ?? json['statusMessage'] ?? '';

@@ -1,4 +1,7 @@
 class MediaExtensions {
+  static RegExp isWebResource = RegExp(
+      r"^https?:\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-@?^=%&/~\+#])?\.\w+$");
+
   static const List<String> video = [
     'mp4',
     'avi',
