@@ -48,7 +48,6 @@ class ChatRemoteDataSource {
           ),
         });
     if (response.statusCode == 201 || response.statusCode == 200) {
-      print(response.body);
       return jsonDecode(response.body);
     }
     throw Exception('Failed to create chat');
@@ -83,7 +82,7 @@ class ChatRemoteDataSource {
     });
     if (response.statusCode == 201) {
       final dynamic data = jsonDecode(response.body);
-      return data.cast<Map<String, dynamic>>();
+      return data;
     }
     throw Exception('Failed to create chat');
   }

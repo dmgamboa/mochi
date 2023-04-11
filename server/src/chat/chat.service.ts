@@ -97,7 +97,7 @@ export class ChatService {
   //Send a message to a chat
   async send(userId: string, chatId: string, content: string, type: MessageType): Promise<Chat> {
     const chat = await this.chatModel.findOneAndUpdate(
-      {chat_id: chatId},
+      {_id: chatId},
       {$push: {messages: {user_id: userId, content: content, type: type, date: new Date(Date.now())}}},
       {new: true}
     ).exec().catch(err => {
@@ -115,7 +115,7 @@ export class ChatService {
     }
     
     const chat = await this.chatModel.findOneAndUpdate(
-      {chat_id: chatId},
+      {_id: chatId},
       {$push: {participants: {$each: [userId], $sort: 1}}},
       {new: true}
     ).exec().catch(err => {
@@ -133,7 +133,7 @@ export class ChatService {
     }
 
     const chat = await this.chatModel.findOneAndUpdate(
-      {chat_id: chatId},
+      {_id: chatId},
       {$pull: {participants: userId}},
       {new: true}
     ).exec().catch(err => {

@@ -48,7 +48,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('room')
-  joinRoom(socket: Socket, chatId: string) {
+  joinRoom(socket: Socket, chatId) {
     socket.join(chatId);
   } 
 }

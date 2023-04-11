@@ -51,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (widget.args.chat != null) {
       chat = widget.args.chat!;
       _getMessages();
-      _setUpSockets();
+      _setUpSockets(chat.id);
     } else {
       chat = Chat(
         id: '',
@@ -101,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _createChat(Message message) async {
     final res = await source.newChat(message, chat.participants);
-    final createdChat = ChatRepository.fromJson(res['chat']);
+    final createdChat = ChatRepository.fromJson(res);
     setState(() => chat = createdChat);
     _setUpSockets(createdChat.id);
   }

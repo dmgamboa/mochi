@@ -64,9 +64,12 @@ export class ChatController {
           })
         );
 
+        const last_message = chat.messages[chat.messages.length - 1];
+
         return {
           chat: chat,
           participants: participants,
+          last_message: last_message,
         }
       }
     } catch (err) {
