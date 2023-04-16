@@ -35,6 +35,9 @@ dependencies:
   path_drawing: ^1.0.1
   collection: ^1.17.0
   flutter_dotenv: ^5.0.2
+  flutter_local_notifications: 
+  rxdart: ^0.23.1
+  timezone: ^0.7.0
 
 
 dev_dependencies:
