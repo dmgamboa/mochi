@@ -112,8 +112,8 @@ class _EventScreenState extends State<EventScreen> {
                   Text(_data['event'] ?? 'loading',
                       style: const TextStyle(fontSize: 24)),
                   // Text(_data['details'] ?? 'loading'),
-                  ElevatedButton(
-                      onPressed: (() => {}), child: const Text("Edit Event")),
+                  // ElevatedButton(
+                  //     onPressed: (() => {}), child: const Text("Edit Event")),
                 ],
               ),
             ),
@@ -145,52 +145,117 @@ class _EventScreenState extends State<EventScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
         ),
         Padding(
+            padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+            child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text.rich(
+                  TextSpan(
+                    text: 'Location:  ',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 12),
+                    children: <TextSpan>[
+                      TextSpan(
+                          text: _data['location'] ?? 'loading',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 12)),
+                    ],
+                  ),
+                ))),
+        Padding(
           padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Location:  ${_data['location']}',
-                  style: const TextStyle(fontSize: 12))),
+              child: Text.rich(
+                TextSpan(
+                  text: 'Start Date:  ',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 12),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: _data['startDateParsed'] ?? 'loading',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 12)),
+                  ],
+                ),
+              )),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Start Date:  ${_data['startDateParsed']}',
-                  style: const TextStyle(fontSize: 12))),
+              child: Text.rich(
+                TextSpan(
+                  text: 'End Date:  ',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 12),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: _data['endDateParsed'] ?? 'loading',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 12)),
+                  ],
+                ),
+              )),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('End Date:  ${_data['endDateParsed']}',
-                  style: const TextStyle(fontSize: 12))),
+              child: Text.rich(
+                TextSpan(
+                  text: 'Start Time:  ',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 12),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: _data['startTimeParsed'] ?? 'loading',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 12)),
+                  ],
+                ),
+              )),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Start Time:  ${_data['startTimeParsed']}',
-                  style: const TextStyle(fontSize: 12))),
+              child: Text.rich(
+                TextSpan(
+                  text: 'End Time:  ',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 12),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: _data['endTimeParsed'] ?? 'loading',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 12)),
+                  ],
+                ),
+              )),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('End Time:  ${_data['endTimeParsed']}',
-                  style: const TextStyle(fontSize: 12))),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Details:  ${_data['details']}',
-                  style: const TextStyle(fontSize: 12))),
+              child: Text.rich(
+                TextSpan(
+                  text: 'Details:  ',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 12),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: _data['details'] ?? 'loading',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 12)),
+                  ],
+                ),
+              )),
         ),
         const Padding(
           padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text("ATTENDEES",
+              child: Text("INVITEES",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
         ),
         Align(
@@ -205,7 +270,30 @@ class _EventScreenState extends State<EventScreen> {
                 )
               : const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: Text("No Attendees have been set for this event...",
+                  child: Text("No one has been invited to this event yet...",
+                      style: TextStyle(color: Colors.grey)),
+                ),
+        ),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
+          child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text("ACCEPTEES",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: (_data['acceptees'] != null && _data['acceptees'].length > 0)
+              ? Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  child: Wrap(
+                    children: buildAccepteeChips(),
+                  ),
+                )
+              : const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  child: Text("No acceptees for this event yet...",
                       style: TextStyle(color: Colors.grey)),
                 ),
         ),
@@ -270,8 +358,8 @@ class _EventScreenState extends State<EventScreen> {
   List<Widget> buildAttendeeChips() {
     List<Widget> chips = [];
     var friendsList = _data['attendees'] ?? [];
-    var attendeesNameList = friendsList.map((e) => e['name']).toList();
-    for (int i = 0; i < attendeesNameList.length && i < 3; i++) {
+    var inviteesNameList = friendsList.map((e) => e['name']).toList();
+    for (int i = 0; i < inviteesNameList.length && i < 3; i++) {
       // add attendee User object to list called attendeesList, this should be attendeesNameList.
       chips.add(
         Padding(
@@ -281,7 +369,7 @@ class _EventScreenState extends State<EventScreen> {
             child: Image.network(
               friendsList.firstWhere((element) =>
                   element.containsKey('name') &&
-                  element['name'] == attendeesNameList[i])['profile_picture'],
+                  element['name'] == inviteesNameList[i])['profile_picture'],
               width: 60,
               height: 60,
               fit: BoxFit.cover,
@@ -290,9 +378,42 @@ class _EventScreenState extends State<EventScreen> {
         ),
       );
       if (i == 2) {
-        if (i != attendeesNameList.length - 1) {
+        if (i != inviteesNameList.length - 1) {
           chips.add(const SizedBox(width: 5));
-          chips.add(Text("+${attendeesNameList.length - 3} more",
+          chips.add(Text("+${inviteesNameList.length - 3} more",
+              style: const TextStyle(color: Colors.grey, fontSize: 10)));
+        }
+      }
+    }
+    return chips;
+  }
+
+  List<Widget> buildAccepteeChips() {
+    List<Widget> chips = [];
+    var friendsList = _data['acceptees'] ?? [];
+    var acepteesNameList = friendsList.map((e) => e['name']).toList();
+    for (int i = 0; i < acepteesNameList.length && i < 3; i++) {
+      // add attendee User object to list called attendeesList, this should be attendeesNameList.
+      chips.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: Image.network(
+              friendsList.firstWhere((element) =>
+                  element.containsKey('name') &&
+                  element['name'] == acepteesNameList[i])['profile_picture'],
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+      if (i == 2) {
+        if (i != acepteesNameList.length - 1) {
+          chips.add(const SizedBox(width: 5));
+          chips.add(Text("+${acepteesNameList.length - 3} more",
               style: const TextStyle(color: Colors.grey, fontSize: 10)));
         }
       }

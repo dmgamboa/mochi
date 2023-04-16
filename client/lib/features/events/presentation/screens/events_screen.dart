@@ -50,11 +50,16 @@ class _EventsScreenState extends State<EventsScreen> {
                     children: [
                       const Text('UPCOMING EVENTS',
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.overline,
+                              decorationColor: Colours.blueGreen,
+                              decorationStyle: TextDecorationStyle.wavy,
+                              decorationThickness: 5)),
                       const Spacer(),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colours.pink,
+                          backgroundColor: Colours.blueGreen,
                         ),
                         onPressed: () {
                           Navigator.of(context)
@@ -68,8 +73,8 @@ class _EventsScreenState extends State<EventsScreen> {
             (userImageSliders.isNotEmpty
                 ? CarouselSlider(
                     options: CarouselOptions(
-                      autoPlay: false,
-                      aspectRatio: 2.0,
+                      autoPlay: true,
+                      aspectRatio: 2.2,
                       enlargeCenterPage: true,
                     ),
                     items: userImageSliders,
@@ -82,18 +87,23 @@ class _EventsScreenState extends State<EventsScreen> {
                     ),
                   )),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
               child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text('INVITED EVENTS',
                       style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold))),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.overline,
+                          decorationColor: Colours.green,
+                          decorationStyle: TextDecorationStyle.wavy,
+                          decorationThickness: 5))),
             ),
             (invitedImageSliders.isNotEmpty
                 ? CarouselSlider(
                     options: CarouselOptions(
                       autoPlay: false,
-                      aspectRatio: 2.0,
+                      aspectRatio: 2.2,
                       enlargeCenterPage: true,
                     ),
                     items: invitedImageSliders,
@@ -106,15 +116,18 @@ class _EventsScreenState extends State<EventsScreen> {
                     ),
                   )),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'FRIEND\'S EVENTS',
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.overline,
+                      decorationColor: Colours.pink,
+                      decorationStyle: TextDecorationStyle.wavy,
+                      decorationThickness: 5),
                 ),
               ),
             ),
@@ -122,7 +135,7 @@ class _EventsScreenState extends State<EventsScreen> {
                 ? CarouselSlider(
                     options: CarouselOptions(
                       autoPlay: false,
-                      aspectRatio: 2.0,
+                      aspectRatio: 2.2,
                       enlargeCenterPage: true,
                     ),
                     items: friendImageSliders,
@@ -135,18 +148,23 @@ class _EventsScreenState extends State<EventsScreen> {
                     ),
                   )),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
               child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text('PAST EVENTS',
                       style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold))),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.overline,
+                          decorationColor: Colors.black,
+                          decorationStyle: TextDecorationStyle.wavy,
+                          decorationThickness: 5))),
             ),
             (userHistoryImageSliders.isNotEmpty
                 ? CarouselSlider(
                     options: CarouselOptions(
                       autoPlay: false,
-                      aspectRatio: 2.0,
+                      aspectRatio: 2.2,
                       enlargeCenterPage: true,
                     ),
                     items: userHistoryImageSliders,
@@ -272,14 +290,28 @@ class _EventsScreenState extends State<EventsScreen> {
                     arguments: EventScreenArgs(eventId: item['event_id']));
               },
               child: Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                decoration: BoxDecoration(
+                  border: isHistory
+                      ? Border.all(
+                          color: Colors.black,
+                          width: 5.0,
+                        )
+                      : Border.all(
+                          color: Colours.blueGreen,
+                          width: 5.0,
+                        ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
                 child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(0.0)),
                     child: Stack(
                       children: <Widget>[
                         Image.network(item['image'],
-                            fit: BoxFit.cover, width: 1000.0),
+                            fit: BoxFit.cover,
+                            width: 1000.0,
+                            color: isHistory ? Colors.grey : null,
+                            colorBlendMode: BlendMode.saturation),
                         Positioned(
                           bottom: 0.0,
                           left: 0.0,
@@ -309,7 +341,6 @@ class _EventsScreenState extends State<EventsScreen> {
                                   ),
                                 ),
                                 Text(
-                                  // DateFormat('yyyy-MM-dd').format(item['date']),
                                   DateFormat('MMMM dd, yyyy')
                                       .format(DateTime.parse(item['date'])),
                                   style: const TextStyle(
@@ -353,9 +384,16 @@ class _EventsScreenState extends State<EventsScreen> {
                 arguments: EventScreenArgs(eventId: item['event_id']));
           },
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+            margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colours.pink,
+                width: 5.0,
+              ),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
             child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(0.0)),
               child: Stack(
                 children: <Widget>[
                   Image.network(item['image'],
@@ -432,17 +470,29 @@ class _EventsScreenState extends State<EventsScreen> {
       invitedImageSliders = await eventsJsonResponse.map<Widget>((item) {
         return GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed(EventScreen.route,
-                arguments: EventScreenArgs(eventId: item['event_id']));
+            Navigator.of(context).pushNamed(
+              EventScreen.route,
+              arguments: EventScreenArgs(eventId: item['event_id']),
+            );
           },
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+            margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colours.green,
+                width: 5.0,
+              ),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
             child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+              borderRadius: BorderRadius.circular(0.0),
               child: Stack(
                 children: <Widget>[
-                  Image.network(item['image'],
-                      fit: BoxFit.cover, width: 1000.0),
+                  Image.network(
+                    item['image'],
+                    fit: BoxFit.cover,
+                    width: 1000.0,
+                  ),
                   Positioned(
                     bottom: 0.0,
                     left: 0.0,
@@ -459,7 +509,9 @@ class _EventsScreenState extends State<EventsScreen> {
                         ),
                       ),
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
+                        vertical: 10.0,
+                        horizontal: 20.0,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -472,7 +524,6 @@ class _EventsScreenState extends State<EventsScreen> {
                             ),
                           ),
                           Text(
-                            // DateFormat('yyyy-MM-dd').format(item['date']),
                             DateFormat('MMMM dd, yyyy')
                                 .format(DateTime.parse(item['date'])),
                             style: const TextStyle(

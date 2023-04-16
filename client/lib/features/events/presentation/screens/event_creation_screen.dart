@@ -48,8 +48,8 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
   DateTime endDate = DateTime.now();
 
   List<String> selectedTagsList = <String>[];
-  List<String> attendeesNameList = <String>[];
-  List<models.User> attendeesList = <models.User>[];
+  List<String> inviteesNameList = <String>[];
+  List<models.User> inviteesList = <models.User>[];
   List<models.User> friendsList = <models.User>[];
 
   late FriendsRemoteDataSource source;
@@ -399,7 +399,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                     padding: const EdgeInsets.fromLTRB(30, 10, 0, 0),
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text("Attendees",
+                      child: Text("Invitees",
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall!
@@ -417,6 +417,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                         icon: const FaIcon(FontAwesomeIcons.personCirclePlus,
                             size: 20),
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: Colours.blueGreen,
                           shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(100)),
@@ -433,7 +434,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: (attendeesNameList.isNotEmpty)
+                child: (inviteesNameList.isNotEmpty)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 10),
@@ -444,7 +445,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                     : const Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                        child: Text("No attendees selected yet...",
+                        child: Text("No invitees selected yet...",
                             style: TextStyle(color: Colors.grey)),
                       ),
               ),
@@ -472,6 +473,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                       child: ElevatedButton.icon(
                         icon: const FaIcon(FontAwesomeIcons.tag, size: 20),
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: Colours.blueGreen,
                           shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(100)),
@@ -506,6 +508,12 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colours.blueGreen,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                  ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       var tokenId = await FirebaseAuth.instance.currentUser!
@@ -532,7 +540,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                           Uri.parse('${getServerUrl()}eventCreation');
 
                       var encodedUsersList =
-                          models.User.encodeUsersList(attendeesList);
+                          models.User.encodeUsersList(inviteesList);
                       var startDateISO = startDate.toIso8601String();
                       var endDateISO = endDate.toIso8601String();
                       var response = await http.post(eventCreationURL,
@@ -576,29 +584,29 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
                       // );
                     }
                   },
-                  child: const Text('Create'),
+                  child: const Text('Create Event'),
                 ),
               ),
-              buildSignoutBtn(context),
+              // buildSignoutBtn(context),
             ]),
           ),
         ));
   }
 
-  Padding buildSignoutBtn(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(double.infinity, 50),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-          ),
-          onPressed: () => signOut(context),
-          child: const Text('Sign Out'),
-        ));
-  }
+  // Padding buildSignoutBtn(BuildContext context) {
+  //   return Padding(
+  //       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+  //       child: ElevatedButton(
+  //         style: ElevatedButton.styleFrom(
+  //           minimumSize: const Size(double.infinity, 50),
+  //           shape: const RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.all(Radius.circular(10)),
+  //           ),
+  //         ),
+  //         onPressed: () => signOut(context),
+  //         child: const Text('Sign Out'),
+  //       ));
+  // }
 
   Widget bottomSheet() {
     return Container(
@@ -674,7 +682,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
             },
             child: const Icon(
               Icons.camera_alt,
-              color: Colours.pink,
+              color: Colours.blueGreen,
               size: 28.0,
             ),
           ),
@@ -788,7 +796,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
 
   List<Widget> buildAttendeeChips() {
     List<Widget> chips = [];
-    for (int i = 0; i < attendeesNameList.length && i < 3; i++) {
+    for (int i = 0; i < inviteesNameList.length && i < 3; i++) {
       // add attendee User object to list called attendeesList, this should be attendeesNameList.
       chips.add(
         Padding(
@@ -797,7 +805,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
             borderRadius: BorderRadius.circular(30),
             child: Image.network(
               friendsList
-                  .firstWhere((element) => element.name == attendeesNameList[i])
+                  .firstWhere((element) => element.name == inviteesNameList[i])
                   .avatar,
               width: 60,
               height: 60,
@@ -809,7 +817,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
       if (i == 2) {
         if (i != selectedTagsList.length - 1) {
           chips.add(const SizedBox(width: 5));
-          chips.add(Text("+${attendeesNameList.length - 3} more",
+          chips.add(Text("+${inviteesNameList.length - 3} more",
               style: const TextStyle(color: Colors.grey, fontSize: 10)));
         }
       }
@@ -828,7 +836,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
       headlineText: 'Select Friends',
       height: 500,
       listData: friendsList.map((e) => e.name).toList(),
-      selectedListData: attendeesNameList,
+      selectedListData: inviteesNameList,
       choiceChipLabel: (item) => item!,
       validateSelectedItem: (list, val) => list!.contains(val),
       controlButtons: [ControlButtonType.All, ControlButtonType.Reset],
@@ -840,9 +848,9 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
 
       onApplyButtonClick: (list) {
         setState(() {
-          attendeesNameList = List.from(list!);
-          attendeesList = friendsList
-              .where((element) => attendeesNameList.contains(element.name))
+          inviteesNameList = List.from(list!);
+          inviteesList = friendsList
+              .where((element) => inviteesNameList.contains(element.name))
               .toList();
         });
         Navigator.pop(context);
