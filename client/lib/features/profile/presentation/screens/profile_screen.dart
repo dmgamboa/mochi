@@ -75,14 +75,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     arguments: EventScreenArgs(eventId: item['event_id']));
               },
               child: Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                decoration: BoxDecoration(
+                  border: isHistory
+                      ? Border.all(
+                          color: Colors.black,
+                          width: 5.0,
+                        )
+                      : Border.all(
+                          color: Colours.blueGreen,
+                          width: 5.0,
+                        ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
                 child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(0.0)),
                     child: Stack(
                       children: <Widget>[
                         Image.network(item['image'],
-                            fit: BoxFit.cover, width: 1000.0),
+                            fit: BoxFit.cover,
+                            width: 1000.0,
+                            color: isHistory ? Colors.grey : null,
+                            colorBlendMode: BlendMode.saturation),
                         Positioned(
                           bottom: 0.0,
                           left: 0.0,
@@ -112,7 +126,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 ),
                                 Text(
-                                  // DateFormat('yyyy-MM-dd').format(item['date']),
                                   DateFormat('MMMM dd, yyyy')
                                       .format(DateTime.parse(item['date'])),
                                   style: const TextStyle(
