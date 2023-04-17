@@ -153,120 +153,129 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+        pageTitle: 'Profile',
         body: SingleChildScrollView(
             child: Column(
-      children: [
-        Row(
           children: [
-            Expanded(child: imageProfile()),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(_data['name'] ?? 'loading',
-                      style: const TextStyle(fontSize: 24)),
-                  Text(_data['display_message'] ?? 'loading'),
-                  ElevatedButton(
-                      onPressed: (() => {
-                            Navigator.pushNamed(context, '/edit-profile')
-                                .then((_) {
-                              setState(() {
-                                _getData();
-                              });
-                            })
-                          }),
-                      child: const Text("Edit Profile")),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("INTERESTS", style: TextStyle(fontSize: 18))),
-        ),
-        //display chips
-        Align(
-          alignment: Alignment.centerLeft,
-          child: (_data['tags'] != null && _data['tags'].length > 0)
-              ? Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: Wrap(
-                    children: buildChips(),
+            Row(
+              children: [
+                Expanded(child: imageProfile()),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(_data['name'] ?? 'loading',
+                          style: const TextStyle(fontSize: 24)),
+                      Text(_data['display_message'] ?? 'loading'),
+                      ElevatedButton(
+                          onPressed: (() => {
+                                Navigator.pushNamed(context, '/edit-profile')
+                                    .then((_) {
+                                  setState(() {
+                                    _getData();
+                                  });
+                                })
+                              }),
+                          child: const Text("Edit Profile")),
+                    ],
                   ),
-                )
-              : const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: Text("No interests selected yet...",
-                      style: TextStyle(color: Colors.grey)),
                 ),
-        ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(30, 10, 0, 0),
-          child: Align(
+                Container(
+                  height: 100,
+                  color: Colours.blueGreen,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                ),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("INTERESTS", style: TextStyle(fontSize: 18))),
+            ),
+            //display chips
+            Align(
               alignment: Alignment.centerLeft,
-              child: Text("UPCOMING EVENTS", style: TextStyle(fontSize: 18))),
-        ),
-        (userImageSliders.isNotEmpty
-            ? CarouselSlider(
-                options: CarouselOptions(
-                  autoPlay: false,
-                  aspectRatio: 2.0,
-                  enlargeCenterPage: true,
-                ),
-                items: userImageSliders,
-              )
-            : const Padding(
-                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
-                child: Text(
-                  "No Events Created Yet..",
-                  style: TextStyle(color: Colors.grey),
-                ),
-              )),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(30, 10, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("PAST EVENTS", style: TextStyle(fontSize: 18))),
-        ),
-        (userHistoryImageSliders.isNotEmpty
-            ? CarouselSlider(
-                options: CarouselOptions(
-                  autoPlay: false,
-                  aspectRatio: 2.0,
-                  enlargeCenterPage: true,
-                ),
-                items: userHistoryImageSliders,
-              )
-            : const Padding(
-                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
-                child: Text(
-                  "No Events Created Yet..",
-                  style: TextStyle(color: Colors.grey),
-                ),
-              )),
-        // const Padding(
-        //   padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
-        //   child: Align(
-        //       alignment: Alignment.centerLeft,
-        //       child: Text("SOCIAL MEDIA", style: TextStyle(fontSize: 18))),
-        // ),
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        //   child: Wrap(
-        //     children: buildSMChips(),
-        //   ),
-        // ),
-        // Container(
-        //   height: 100,
-        //   color: Colours.blueGreen,
-        //   margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        // ),
-      ],
-    )));
+              child: (_data['tags'] != null && _data['tags'].length > 0)
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10),
+                      child: Wrap(
+                        children: buildChips(),
+                      ),
+                    )
+                  : const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                      child: Text("No interests selected yet...",
+                          style: TextStyle(color: Colors.grey)),
+                    ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(30, 10, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child:
+                      Text("UPCOMING EVENTS", style: TextStyle(fontSize: 18))),
+            ),
+            (userImageSliders.isNotEmpty
+                ? CarouselSlider(
+                    options: CarouselOptions(
+                      autoPlay: false,
+                      aspectRatio: 2.0,
+                      enlargeCenterPage: true,
+                    ),
+                    items: userImageSliders,
+                  )
+                : const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
+                    child: Text(
+                      "No Events Created Yet..",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(30, 10, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("PAST EVENTS", style: TextStyle(fontSize: 18))),
+            ),
+            (userHistoryImageSliders.isNotEmpty
+                ? CarouselSlider(
+                    options: CarouselOptions(
+                      autoPlay: false,
+                      aspectRatio: 2.0,
+                      enlargeCenterPage: true,
+                    ),
+                    items: userHistoryImageSliders,
+                  )
+                : const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 5),
+                    child: Text(
+                      "No Events Created Yet..",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )),
+            // const Padding(
+            //   padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
+            //   child: Align(
+            //       alignment: Alignment.centerLeft,
+            //       child: Text("SOCIAL MEDIA", style: TextStyle(fontSize: 18))),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            //   child: Wrap(
+            //     children: buildSMChips(),
+            //   ),
+            // ),
+            // Container(
+            //   height: 100,
+            //   color: Colours.blueGreen,
+            //   margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            // ),
+          ],
+        )));
   }
 
   Widget imageProfile() {

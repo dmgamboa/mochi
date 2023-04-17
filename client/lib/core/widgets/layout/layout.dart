@@ -8,11 +8,12 @@ import 'package:path_drawing/path_drawing.dart';
 import '../../../features/auth/presentation/screens/signup_screen.dart';
 import '../nav_bar/nav_bar.dart';
 
-import './slime_path.dart';
+import 'slime.dart';
 
 class Layout extends StatefulWidget {
   final bool needsAuth;
   final String? pageTitle;
+  final Widget? pageTitleWidget;
   final Widget? appBar;
   final Color? appBarBg;
   final Widget body;
@@ -29,6 +30,7 @@ class Layout extends StatefulWidget {
     this.onBackPressed,
     this.navBar = true,
     this.pageTitle,
+    this.pageTitleWidget,
     this.height = 70,
     required this.body,
     Key? key,
@@ -58,30 +60,32 @@ class _LayoutState extends State<Layout> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(widget.height),
-        child: AppBar(
-          leading: widget.backBtn
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: widget.onBackPressed ??
-                      () {
-                        Navigator.pop(context);
-                      },
-                )
-              : Container(),
-          title: widget.appBar ??
-              (widget.pageTitle != null
-                  ? Text(widget.pageTitle!)
-                  : Container()),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Expanded(child: widget.body),
-          ],
+      appBar: widget.pageTitle != null || widget.pageTitleWidget != null
+          ? AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Theme.of(context).primaryColor,
+              leading: widget.backBtn
+                  ? IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: widget.onBackPressed ??
+                          () {
+                            Navigator.pop(context);
+                          },
+                    )
+                  : null,
+              title: widget.pageTitleWidget ??
+                  Center(child: Text(widget.pageTitle!)),
+            )
+          : null,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              widget.appBar ?? Container(),
+              Expanded(child: widget.body),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar:
