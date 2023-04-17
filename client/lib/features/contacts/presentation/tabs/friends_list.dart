@@ -14,14 +14,16 @@ class FriendsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: friends.length,
-      itemBuilder: (BuildContext context, int index) {
-        return FriendsListElement(
-          user: friends[index],
-          onTap: onTap,
-        );
-      },
-    );
+    return friends.isEmpty
+        ? const Center(child: Text('No friends yet :('))
+        : ListView.builder(
+            itemCount: friends.length,
+            itemBuilder: (BuildContext context, int index) {
+              return FriendsListElement(
+                user: friends[index],
+                onTap: onTap,
+              );
+            },
+          );
   }
 }

@@ -60,6 +60,7 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
     return Layout(
         // needsAuth: false,
         navBar: false,
+        pageTitle: 'Manage Profile',
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(

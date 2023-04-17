@@ -153,10 +153,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+        pageTitle: 'Profile',
         body: SingleChildScrollView(
             child: Column(
-      children: [
-        Row(
           children: [
             Expanded(child: imageProfile()),
             Expanded(
@@ -178,6 +177,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: const Text("Edit Profile")),
                 ],
               ),
+            ),
+            Container(
+              height: 100,
+              color: Colours.blueGreen,
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             ),
           ],
         ),

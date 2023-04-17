@@ -23,6 +23,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
   List<FriendRequest> requests = [];
   List<SearchResult> searchResults = [];
   late FriendsRemoteDataSource source;
+  FriendRequestType requestTab = FriendRequestType.incoming;
 
   @override
   void initState() {
@@ -32,14 +33,26 @@ class _ContactsScreenState extends State<ContactsScreen> {
     getRequests();
   }
 
+  @override
+  void didUpdateWidget(covariant ContactsScreen oldWidget) {
+    if (oldWidget.key != widget.key) {
+      getFriends();
+      getRequests();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
   void getFriends() async {
     final res = FriendsListRepository.fromServer(await source.getFriends());
     setState(() => friends = res);
   }
 
   void getRequests() async {
-    final res =
-        FriendRequestsRepository.fromServer(await source.getIncomingRequests());
+    final res = FriendRequestsRepository.fromServer(
+      requestTab == FriendRequestType.incoming
+          ? await source.getIncomingRequests()
+          : await source.getOutgoingRequests(),
+    );
     setState(() => requests = res);
   }
 
@@ -67,11 +80,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
   }
 
   void onRequestTabChanged(FriendRequestType type) async {
-    final res = FriendRequestsRepository.fromServer(
-        type == FriendRequestType.incoming
-            ? await source.getIncomingRequests()
-            : await source.getOutgoingRequests());
-    setState(() => requests = res);
+    setState(() => requestTab = type);
+    getRequests();
   }
 
   void onSearch(String query) async {
@@ -84,6 +94,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+      pageTitle: 'Friends',
       body: DefaultTabController(
         length: Constants.tabs.length,
         child: Column(

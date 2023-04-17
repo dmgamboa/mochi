@@ -10,21 +10,22 @@ class DiscoverScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Layout(
+        pageTitle: 'Discover',
         body: Column(children: [
-      const Text('Discover Screen'),
-      Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 50),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-            ),
-            onPressed: () => signOut(context),
-            child: const Text('Sign Out'),
-          ))
-    ]));
+          const Text('Discover Screen'),
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+                onPressed: () => signOut(context),
+                child: const Text('Sign Out'),
+              ))
+        ]));
   }
 
   signOut(BuildContext context) async {
