@@ -81,6 +81,7 @@ class _EventCreationScreenState extends State<EventCreationScreen> {
     return Layout(
         // needsAuth: false,
         navBar: false,
+        pageTitle: 'Create an Event',
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(

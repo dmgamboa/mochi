@@ -99,246 +99,259 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+        pageTitle: 'Event Details',
         body: SingleChildScrollView(
             child: Column(
-      children: [
-        Row(
           children: [
-            Expanded(child: imageProfile()),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(_data['event'] ?? 'loading',
-                      style: const TextStyle(fontSize: 24)),
-                  // Text(_data['details'] ?? 'loading'),
-                  // ElevatedButton(
-                  //     onPressed: (() => {}), child: const Text("Edit Event")),
-                ],
-              ),
+            Row(
+              children: [
+                Expanded(child: imageProfile()),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(_data['event'] ?? 'loading',
+                          style: const TextStyle(fontSize: 24)),
+                      // Text(_data['details'] ?? 'loading'),
+                      // ElevatedButton(
+                      //     onPressed: (() => {}), child: const Text("Edit Event")),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            _data['attendees'] != null
+                ? (_data['attendees'].any((attendee) =>
+                        attendee['id'] ==
+                        FirebaseAuth.instance.currentUser!.uid))
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                              onPressed: (() => acceptInvite()),
+                              child: const Text("Accept Event")),
+                          ElevatedButton(
+                              onPressed: (() => declineInvite()),
+                              child: const Text("Decline Event")),
+                        ],
+                      )
+                    : const SizedBox(
+                        height: 0,
+                      )
+                : const CircularProgressIndicator(),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("EVENT DETAILS",
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold))),
+            ),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text.rich(
+                      TextSpan(
+                        text: 'Location:  ',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 12),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: _data['location'] ?? 'loading',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.normal, fontSize: 12)),
+                        ],
+                      ),
+                    ))),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text.rich(
+                    TextSpan(
+                      text: 'Start Date:  ',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 12),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: _data['startDateParsed'] ?? 'loading',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.normal, fontSize: 12)),
+                      ],
+                    ),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text.rich(
+                    TextSpan(
+                      text: 'End Date:  ',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 12),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: _data['endDateParsed'] ?? 'loading',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.normal, fontSize: 12)),
+                      ],
+                    ),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text.rich(
+                    TextSpan(
+                      text: 'Start Time:  ',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 12),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: _data['startTimeParsed'] ?? 'loading',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.normal, fontSize: 12)),
+                      ],
+                    ),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text.rich(
+                    TextSpan(
+                      text: 'End Time:  ',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 12),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: _data['endTimeParsed'] ?? 'loading',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.normal, fontSize: 12)),
+                      ],
+                    ),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text.rich(
+                    TextSpan(
+                      text: 'Details:  ',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 12),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: _data['details'] ?? 'loading',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.normal, fontSize: 12)),
+                      ],
+                    ),
+                  )),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("INVITEES",
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold))),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: (_data['attendees'] != null &&
+                      _data['attendees'].length > 0)
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10),
+                      child: Wrap(
+                        children: buildAttendeeChips(),
+                      ),
+                    )
+                  : const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                      child: Text(
+                          "No one has been invited to this event yet...",
+                          style: TextStyle(color: Colors.grey)),
+                    ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("ACCEPTEES",
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold))),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: (_data['acceptees'] != null &&
+                      _data['acceptees'].length > 0)
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10),
+                      child: Wrap(
+                        children: buildAccepteeChips(),
+                      ),
+                    )
+                  : const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                      child: Text("No acceptees for this event yet...",
+                          style: TextStyle(color: Colors.grey)),
+                    ),
+            ),
+            // Container(
+            //   height: 70,
+            //   color: Colours.pink,
+            // ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("EVENT TAGS",
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold))),
+            ),
+            //display chips
+            Align(
+              alignment: Alignment.centerLeft,
+              child: (_data['tags'] != null && _data['tags'].length > 0)
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10),
+                      child: Wrap(
+                        children: buildChips(),
+                      ),
+                    )
+                  : const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                      child: Text("No tags have been set for this event...",
+                          style: TextStyle(color: Colors.grey)),
+                    ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(30, 10, 0, 0),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("POSTS",
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold))),
+            ),
+            Container(
+              height: 100,
+              color: Colours.blueGreen,
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             ),
           ],
-        ),
-        _data['attendees'] != null
-            ? (_data['attendees'].any((attendee) =>
-                    attendee['id'] == FirebaseAuth.instance.currentUser!.uid))
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                          onPressed: (() => acceptInvite()),
-                          child: const Text("Accept Event")),
-                      ElevatedButton(
-                          onPressed: (() => declineInvite()),
-                          child: const Text("Decline Event")),
-                    ],
-                  )
-                : const SizedBox(
-                    height: 0,
-                  )
-            : const CircularProgressIndicator(),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("EVENT DETAILS",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
-        ),
-        Padding(
-            padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
-            child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text.rich(
-                  TextSpan(
-                    text: 'Location:  ',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 12),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: _data['location'] ?? 'loading',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.normal, fontSize: 12)),
-                    ],
-                  ),
-                ))),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text.rich(
-                TextSpan(
-                  text: 'Start Date:  ',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 12),
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: _data['startDateParsed'] ?? 'loading',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 12)),
-                  ],
-                ),
-              )),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text.rich(
-                TextSpan(
-                  text: 'End Date:  ',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 12),
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: _data['endDateParsed'] ?? 'loading',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 12)),
-                  ],
-                ),
-              )),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text.rich(
-                TextSpan(
-                  text: 'Start Time:  ',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 12),
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: _data['startTimeParsed'] ?? 'loading',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 12)),
-                  ],
-                ),
-              )),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text.rich(
-                TextSpan(
-                  text: 'End Time:  ',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 12),
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: _data['endTimeParsed'] ?? 'loading',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 12)),
-                  ],
-                ),
-              )),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text.rich(
-                TextSpan(
-                  text: 'Details:  ',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 12),
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: _data['details'] ?? 'loading',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 12)),
-                  ],
-                ),
-              )),
-        ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("INVITEES",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: (_data['attendees'] != null && _data['attendees'].length > 0)
-              ? Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: Wrap(
-                    children: buildAttendeeChips(),
-                  ),
-                )
-              : const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: Text("No one has been invited to this event yet...",
-                      style: TextStyle(color: Colors.grey)),
-                ),
-        ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("ACCEPTEES",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: (_data['acceptees'] != null && _data['acceptees'].length > 0)
-              ? Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: Wrap(
-                    children: buildAccepteeChips(),
-                  ),
-                )
-              : const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: Text("No acceptees for this event yet...",
-                      style: TextStyle(color: Colors.grey)),
-                ),
-        ),
-        // Container(
-        //   height: 70,
-        //   color: Colours.pink,
-        // ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(30, 20, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("EVENT TAGS",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
-        ),
-        //display chips
-        Align(
-          alignment: Alignment.centerLeft,
-          child: (_data['tags'] != null && _data['tags'].length > 0)
-              ? Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: Wrap(
-                    children: buildChips(),
-                  ),
-                )
-              : const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: Text("No tags have been set for this event...",
-                      style: TextStyle(color: Colors.grey)),
-                ),
-        ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(30, 10, 0, 0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("POSTS",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
-        ),
-        Container(
-          height: 100,
-          color: Colours.blueGreen,
-          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        ),
-      ],
-    )));
+        )));
   }
 
   Widget imageProfile() {

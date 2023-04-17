@@ -30,6 +30,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
     super.initState();
   }
 
+  @override
+  void didUpdateWidget(ChatListScreen oldWidget) {
+    if (oldWidget.key != widget.key) {
+      getChats();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
   void getChats() async {
     final res = await source.getChats();
     setState(() => chats = ChatRepository.fromServer(res));
@@ -38,61 +46,70 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   Widget build(BuildContext context) {
     return Layout(
-      appBar: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Text('Chats'),
-          const Spacer(),
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, NewChatScreen.route),
-            child: const Icon(Icons.add),
-          ),
-        ],
+      pageTitleWidget: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text('Chats'),
+            const Spacer(),
+            GestureDetector(
+              onTap: () => Navigator.pushNamed(context, NewChatScreen.route),
+              child: const Icon(Icons.add),
+            ),
+          ],
+        ),
       ),
-      body: ListView.builder(
-        itemCount: chats.length,
-        itemBuilder: (context, index) {
-          final chat = chats[index];
+      body: chats.isEmpty
+          ? const Center(
+              child: Text('No chats yet.'),
+            )
+          : ListView.builder(
+              itemCount: chats.length,
+              itemBuilder: (context, index) {
+                final chat = chats[index];
 
-          return GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, ChatScreen.route,
-                  arguments: ChatScreenArgs(chat: chat));
-            },
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                foregroundColor: Colors.white,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Image.network(
-                    chat.participants[0].avatar,
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      chat.getTitle(userId!),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                      overflow: TextOverflow.ellipsis,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, ChatScreen.route,
+                        arguments: ChatScreenArgs(chat: chat));
+                  },
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      foregroundColor: Colors.white,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Image.network(
+                          chat.participants[0].avatar,
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            chat.getTitle(userId!),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(chat.lastMessage!.createdAt
+                            .toString()
+                            .substring(0, 10)),
+                      ],
+                    ),
+                    subtitle: Text(
+                      chat.getSubtitle(userId!),
                     ),
                   ),
-                  Text(chat.lastMessage!.createdAt.toString().substring(0, 10)),
-                ],
-              ),
-              subtitle: Text(
-                chat.getSubtitle(userId!),
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }

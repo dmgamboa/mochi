@@ -39,6 +39,7 @@ class _EventsScreenState extends State<EventsScreen> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+      pageTitle: 'Events',
       body: SingleChildScrollView(
         child: Column(
           children: [
